@@ -5,7 +5,7 @@
 <h1 align="center">Poké League</h1>
 
 <p align="center">
-  <b>Learn Kubernetes DevSecOps by earning all eight Kanto badges.</b><br>
+  <b>Practice Kubernetes security by earning all eight Kanto badges.</b><br>
   Every gym is a real security control. Every workload is a Pokémon. Team Rocket is trying to get into prod.
 </p>
 
