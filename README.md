@@ -43,11 +43,7 @@ FireRed was the game I couldn't put down: picking a starter in Pallet Town, grin
 finally walking into the Indigo Plateau with a team I'd built badge by badge. Every gym leader taught one lesson, and
 you couldn't skip ahead until you'd learned it.
 
-When I started learning DevSecOps, it felt the same: a long route of separate skills (hardening, secrets, supply chain,
-least privilege) that only click once you've fought through each one. So I built the league I wished I'd had. Every
-gym is a real Kubernetes security control, the Elite Four is a real CI pipeline, and Team Rocket is every misconfigured
-Deployment you'll ever meet. Even the Pokédex inside uses **FireRed's Gen 3 typings**, so Clefairy is Normal, the way it
-was meant to be.
+As I continued refining my security practice, the parallel was hard to miss: good security posture is built gate by gate (hardening, secrets management, supply-chain integrity, least privilege), and each gate is best learned by facing it head-on. So I built a league that makes every one of those gates something you have to earn.
 
 If you grew up with a Game Boy Advance and you're learning cloud security now, this one's for you. Gotta secure 'em all.
 
