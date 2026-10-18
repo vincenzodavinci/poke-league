@@ -54,6 +54,19 @@ Runs only on `main`, after all three Elite Four pass, once per service (matrix):
 
 Permissions are granted per job: only Lance gets `packages: write`, `id-token: write` and `attestations: write`.
 
+**Verify it yourself.** Anyone can check that an image was built by this repo's workflow, with no key needed:
+
+```bash
+docker run --rm ghcr.io/sigstore/cosign/cosign:v3.0.6 verify \
+  ghcr.io/vincenzodavinci/poke-league/dex-api:<commit-sha> \
+  --certificate-identity-regexp '^https://github.com/vincenzodavinci/poke-league/' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+```
+
+Use cosign **v3** here. The installer gives CI cosign v3, which stores signatures as Sigstore bundles via OCI referrers.
+A v2 client looks for the old `sha256-<digest>.sig` tag and reports *no signatures found*, even though the image is
+signed. (The local `make sign` flow uses v2 and the classic format, so the two never mix.)
+
 > Locally, Koga trusts a cosign **key pair** because a laptop has no OIDC identity. Switching Koga to verify Lance's
 > keyless identity (`keyless.identities` with issuer `https://token.actions.githubusercontent.com`) is the natural next
 > step once you run against GHCR.
