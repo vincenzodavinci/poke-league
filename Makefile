@@ -15,6 +15,7 @@ REG_IN   := kind-registry:5000/poke-league
 APPS     := dex-api sprite-svc league-board
 TAG      := $(shell git rev-parse --short HEAD 2>/dev/null || echo dev)
 BUILD    := .build
+BUILDPLATFORM := linux/$(shell uname -m | sed 's/x86_64/amd64/; s/aarch64/arm64/')
 
 # Where the league's images come from, and who Koga trusts:
 #   TRUST=key  (default) built here, pushed to the local registry, signed with
@@ -97,7 +98,7 @@ images: ## Build and push all service images; record their digests
 	@mkdir -p $(BUILD)/digests
 	@for app in $(APPS); do \
 	  echo "==> $$app"; \
-	  docker build -q --build-arg APP=$$app -f build/Dockerfile -t $(REG)/$$app:$(TAG) . >/dev/null; \
+	  docker build -q --build-arg APP=$$app --build-arg BUILDPLATFORM=$(BUILDPLATFORM) -f build/Dockerfile -t $(REG)/$$app:$(TAG) . >/dev/null; \
 	  docker push -q $(REG)/$$app:$(TAG) >/dev/null; \
 	  docker inspect --format '{{index .RepoDigests 0}}' $(REG)/$$app:$(TAG) | cut -d@ -f2 > $(BUILD)/digests/$$app; \
 	  echo "    $(REG_IN)/$$app@$$(cat $(BUILD)/digests/$$app)"; \
