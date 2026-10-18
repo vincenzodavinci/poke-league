@@ -25,6 +25,10 @@ a later commit is still in the history. The only real fix is to rotate it.
 Try it locally: `docker run --rm -v $PWD:/repo ghcr.io/gitleaks/gitleaks:v8.28.0 dir /repo`. It finds your
 `.cosign/cosign.key`. That's correct, and it's why `.cosign/` is in `.gitignore`.
 
+The CI job also fails if gitleaks reports **0 commits scanned**. Run inside a container against a mounted repo, git
+refuses to read it ("dubious ownership"), and gitleaks then reports "no leaks found" after checking nothing. A gate
+that can pass without looking is worse than no gate.
+
 ## <img src="../assets/pokemon/68.png" width="40"> Bruno: static analysis
 
 - **govulncheck** reports only vulnerabilities your code can *actually reach*, with the call path. While this repo was
@@ -92,5 +96,5 @@ Lint the workflow locally: `docker run --rm -v $PWD:/repo -w /repo rhysd/actionl
 
 ## Running it
 
-The pipeline only runs once you push the repository to GitHub. For an org-owned repository, gitleaks-action needs a free
-`GITLEAKS_LICENSE` secret. Personal accounts don't.
+The pipeline runs on every push and pull request. No secrets need configuring: signing is keyless, and gitleaks runs
+as a plain CLI container, with no license needed.

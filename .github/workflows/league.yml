@@ -53,10 +53,19 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with: {fetch-depth: 0, persist-credentials: false}   # full history: old commits leak too
-      - uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}   # only needed for org-owned repos
+      # The gitleaks CLI over every commit, rather than gitleaks-action's per-push
+      # range: that range starts at the first pushed commit's parent, which
+      # doesn't exist on a new repo's first push, so the scan errors out.
+      - name: gitleaks (full history)
+        shell: bash   # -eo pipefail, so a gitleaks failure fails the step
+        run: |
+          docker run --rm \
+            -e GIT_CONFIG_COUNT=1 -e GIT_CONFIG_KEY_0=safe.directory -e GIT_CONFIG_VALUE_0='*' \
+            -v "$PWD:/repo" \
+            ghcr.io/gitleaks/gitleaks:v8.28.0@sha256:cdbb7c955abce02001a9f6c9f602fb195b7fadc1e812065883f695d1eeaba854 \
+            git /repo --redact --no-banner 2>&1 | tee gitleaks.log
+          # A scan that silently covers 0 commits is not a gate.
+          grep -Eq '[1-9][0-9]* commits scanned' gitleaks.log || { echo "::error::gitleaks scanned no commits"; exit 1; }
 
   bruno:
     name: Bruno · static analysis
