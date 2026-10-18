@@ -64,26 +64,107 @@ A complete, runnable DevSecOps platform on a local [kind](https://kind.sigs.k8s.
 
 The app being secured is real too: three small Go services (a FireRed-accurate Kanto Pokédex API, a sprite server and the board), built on distroless images, hardened, signed and pinned by digest.
 
-## Quick start
+## Getting started, step by step
 
-You need Docker (Docker Desktop, Colima or OrbStack), `kind`, `kubectl`, `helm`, Go 1.27+ and `make`.
+**You'll need:** a Mac, Linux, or Windows with WSL2 · about **4 GB of free RAM** for Docker · ~15 minutes the first time.
+Everything runs on your own machine; nothing is deployed to the cloud.
 
+> New to Kubernetes? Keep the [**Beginner cheat sheet**](#beginner-cheat-sheet--answers) open in another tab. It
+> explains every term and command used below.
+
+### Step 1: Install the tools
+
+**Mac** (with [Homebrew](https://brew.sh)):
 ```bash
-make demo        # ~3 minutes: cluster, Kyverno, build + sign images, open the gyms, deploy, release Team Rocket
-make board       # http://localhost:8088
-make trivy       # optional: CVE scanning → HP bars (first scan takes a few minutes)
+brew install git kind kubectl helm python
+brew install --cask docker-desktop   # Docker Desktop. Prefer something lighter? brew install colima docker
 ```
 
-Then try to cheat:
+**Linux:** install [Docker Engine](https://docs.docker.com/engine/install/), then
+[kind](https://kind.sigs.k8s.io/docs/user/quick-start/#installation),
+[kubectl](https://kubernetes.io/docs/tasks/tools/) and [Helm](https://helm.sh/docs/intro/install/), plus `git`,
+`make` and `python3` from your package manager.
 
+**Windows:** install [WSL2](https://learn.microsoft.com/windows/wsl/install) and
+[Docker Desktop](https://docs.docker.com/desktop/setup/install/windows-install/) with WSL integration on, then do
+everything from the **Ubuntu** terminal using the Linux instructions.
+
+✅ **Check:** each of these prints a version number:
 ```bash
-make challenge   # sneak Team Rocket's Meowth into prod and read why every gym says no
-make reports     # the raw PolicyReports the board is built from
-make test        # Go unit tests + 29 Kyverno policy tests
-make down        # delete everything
+docker --version && kind --version && kubectl version --client && helm version --short && python3 --version
 ```
 
-Every `kubectl`/`helm` command in the Makefile is pinned to the `kind-kanto` context, so it can't act on whatever cluster your kubeconfig points at.
+### Step 2: Start Docker
+
+- **Docker Desktop:** open the app and wait until it says *Engine running*.
+- **Colima:** `colima start --cpu 4 --memory 8`
+
+✅ **Check:** `docker info` prints details without an error.
+
+### Step 3: Get the code
+
+```bash
+git clone https://github.com/vincenzodavinci/poke-league.git
+cd poke-league
+```
+
+✅ **Check:** your terminal prompt now ends in `poke-league`. Run every command below from this folder.
+
+### Step 4: Build the league
+
+```bash
+make demo
+```
+
+This takes **3–5 minutes**. It creates a local cluster, installs Kyverno, builds and signs the images, opens the
+gyms, deploys the app and releases Team Rocket.
+
+✅ **Check:** near the end you see `16/16 gyms open`, several `successfully rolled out` lines, and finally
+`League Board: http://localhost:8088`. If something fails, jump to [Troubleshooting](#troubleshooting).
+
+### Step 5: Open the League Board
+
+Go to **http://localhost:8088**, or run `make board`.
+
+✅ **Check:** six shiny ✦ cards under *Pallet Town* and *Indigo Plateau*, and three failing *Team Rocket* cards. Click
+the **Gyms** and **Pokédex** tabs.
+
+### Step 6 (optional): Turn on vulnerability scanning
+
+```bash
+make trivy
+```
+
+✅ **Check:** after ~5 minutes the HP bars fill in. Meowth drops to **0 HP and faints**, thanks to 8 critical CVEs.
+
+### Step 7: Play
+
+1. `make challenge`: try to sneak Team Rocket into prod, and read why every gym says no.
+2. **[Team Rocket labs](docs/team-rocket.md)**: attack Meowth, Koffing and Arbok, then fix them.
+3. **[The gyms](docs/gyms.md)**: break each rule on purpose and watch its badge go dark.
+4. Stuck? Every answer is in the [cheat sheet below](#answers).
+
+### Step 8: Clean up
+
+```bash
+make down              # deletes the cluster; `make demo` rebuilds it any time
+colima stop            # only if you use Colima
+```
+
+### Troubleshooting
+
+| What you see | Fix |
+|---|---|
+| `make: command not found` (Mac) | `xcode-select --install` |
+| `Cannot connect to the Docker daemon` | Docker isn't running: redo [Step 2](#step-2-start-docker) |
+| kind fails with `could not find a log line…` or `Too many open files` | Raise the inotify limit, then `make down && make demo`. Colima: `colima ssh -- sudo sysctl -w fs.inotify.max_user_instances=1024 fs.inotify.max_user_watches=1048576`. Linux: the same `sudo sysctl …` without `colima ssh --` |
+| The board doesn't load at `localhost:8088` | Another program is using that port (`lsof -nP -iTCP:8088` shows which). Run `make board-dev` and open **http://localhost:8081** instead |
+| HP shows `??` | Scanning isn't on: run `make trivy` and wait a few minutes |
+| Badges show *not judged yet* | Wait 1–2 minutes; Kyverno writes its reports in the background |
+| `python3: command not found` | Install Python 3 (Step 1) |
+
+Every `kubectl`/`helm` command in the Makefile is pinned to the `kind-kanto` context, so it can never touch another
+cluster on your machine.
 
 ## The gyms
 
@@ -188,6 +269,237 @@ Architecture, design decisions and the field notes from building it (the bugs wo
 5. `make trivy` and watch CVEs become HP damage. Patch Meowth's image and revive it.
 6. Push to GitHub and watch the Elite Four run ([docs/elite-four.md](docs/elite-four.md)).
 7. Write a ninth gym. Ideas: require NetworkPolicies, ban `NodePort` in prod, require the SBOM attestation that Lance already produces.
+
+## Beginner cheat sheet & answers
+
+An optional reference. Use it if you get stuck, or skip it if you'd rather figure things out. The answers are hidden:
+**click a line to reveal it.** Try first!
+
+### Words you'll see
+
+| Term | In plain English |
+|---|---|
+| **Kubernetes / cluster** | Software that runs and manages containers. Here, the whole cluster lives on your laptop |
+| **kind** | "Kubernetes in Docker": a full cluster running inside a Docker container |
+| **Namespace** | A folder inside the cluster. Here, one per town: `pallet-town`, `indigo-plateau`, `team-rocket` |
+| **Pod / Deployment** | A pod is a running container. A Deployment keeps the right number of pods running |
+| **Manifest** | The YAML file describing what to run (`deploy/rocket/meowth.yaml`, for example) |
+| **Kyverno policy** | A rule checked whenever something is created. Each gym is one |
+| **Audit vs enforce** | Audit warns but allows it (dev). Enforce blocks it (prod) |
+| **Secret** | A Kubernetes object for passwords and keys, so they stay out of manifests and Git |
+| **ServiceAccount / token** | A pod's identity for talking to Kubernetes. Its token is a password the pod carries |
+| **RBAC** | Who is allowed to do what. A token is only as dangerous as its RBAC |
+| **Image / tag / digest** | An image is the packaged app. A tag (`:1.27`) can move; a digest (`@sha256:…`) never changes |
+| **cosign signature** | Cryptographic proof of who built an image. Koga only admits signed ones |
+| **CVE** | A publicly known vulnerability. Trivy counts them, and they cost HP |
+
+### Commands you'll use
+
+```bash
+alias k='kubectl --context kind-kanto'   # a shortcut; run it again in every new terminal window
+k get pods -n team-rocket                # what's running in a namespace
+k describe pod <name> -n team-rocket     # details and events (why isn't it starting?)
+k logs deploy/meowth -n team-rocket      # the app's output
+k exec -it deploy/meowth -n team-rocket -- sh   # open a shell inside the container
+k apply -f my-file.yaml --dry-run=server # ask the gyms for a verdict without changing anything
+k apply -f my-file.yaml                  # deploy or update for real
+make reports                             # every gym result, straight from Kyverno
+make help                                # every make target
+```
+
+### Reading the board
+
+- **Lit badge** = passed that gym · **dark badge with a red dot** = failed · **faded** = not judged yet.
+- **The red list on a card** is each gym leader telling you exactly what to fix.
+- **HP** = 100 minus damage from CVEs (critical −25, high −8, medium −2). At 0 HP the card **faints**.
+- **Shiny ✦** = all 8 badges **and** no high or critical CVEs.
+
+### Answers
+
+<details>
+<summary><b>Meowth 1</b>: read the leaked password</summary>
+
+```bash
+k -n team-rocket get deploy meowth -o jsonpath='{.spec.template.spec.containers[0].env}'
+```
+It's `pikachu-is-mine-123`, in plain text. Anyone who can read Deployments (or the Git repo) sees it.
+</details>
+
+<details>
+<summary><b>Meowth 2</b>: steal its API token, then make it dangerous</summary>
+
+```bash
+k -n team-rocket exec deploy/meowth -- sh -c 'curl -sk -H "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" https://kubernetes.default.svc/api/v1/namespaces/team-rocket/secrets'
+```
+That returns `Forbidden`: the default ServiceAccount has no permissions yet. Now play the careless teammate:
+```bash
+k -n team-rocket create secret generic giovannis-vault --from-literal=master-ball-code=150-mewtwo
+k -n team-rocket create rolebinding just-make-it-work --clusterrole=edit --serviceaccount=team-rocket:default
+```
+Run the same `curl` again, with `/giovannis-vault` added to the end of the URL: the secret comes back (base64-encoded).
+Clean up with `k -n team-rocket delete rolebinding just-make-it-work` and `k -n team-rocket delete secret giovannis-vault`.
+</details>
+
+<details>
+<summary><b>Meowth 3</b>: the full fix, step by step (8/8 and shiny ✦)</summary>
+
+**a. Move the password into a Secret** (Misty):
+```bash
+k -n team-rocket create secret generic meowth-db --from-literal=password=pikachu-is-mine-123
+```
+
+**b. Use a non-root nginx image from the league registry, and sign it** (Brock, Erika, Koga). The stock `nginx` image
+runs as root, so switch to `nginxinc/nginx-unprivileged`. Use its newest `-alpine` tag: old base images are full of
+CVEs. When this was written, that was `1.30.6-alpine`.
+```bash
+docker pull nginxinc/nginx-unprivileged:1.30.6-alpine
+docker tag nginxinc/nginx-unprivileged:1.30.6-alpine localhost:5001/poke-league/meowth:1.30.6
+docker push localhost:5001/poke-league/meowth:1.30.6
+
+# Ask the REGISTRY for the digest. Docker's own `docker inspect` can report a different
+# (upstream) digest after a push, and signing that one doesn't count.
+DIGEST=$(curl -sI -H 'Accept: application/vnd.oci.image.index.v1+json, application/vnd.docker.distribution.manifest.list.v2+json, application/vnd.oci.image.manifest.v1+json, application/vnd.docker.distribution.manifest.v2+json' \
+  http://localhost:5001/v2/poke-league/meowth/manifests/1.30.6 | grep -i docker-content-digest | awk '{print $2}' | tr -d '\r')
+echo $DIGEST
+
+# Sign it with the league key (the same command `make sign` uses):
+docker run --rm --network kind --user $(id -u):$(id -g) -v $PWD/.cosign:/keys -w /keys -e COSIGN_PASSWORD= \
+  ghcr.io/sigstore/cosign/cosign:v2.6.1 sign --yes --key /keys/cosign.key \
+  --allow-insecure-registry --allow-http-registry --tlog-upload=false kind-registry:5000/poke-league/meowth@$DIGEST
+```
+
+**c. The fixed manifest.** Replace `<DIGEST>` with the value printed above. The comments say which gym each part
+satisfies:
+```yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: meowth
+  namespace: team-rocket
+automountServiceAccountToken: false           # Giovanni: no token
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: meowth
+  namespace: team-rocket
+  labels: {app.kubernetes.io/name: meowth}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app.kubernetes.io/name: meowth}
+  template:
+    metadata:
+      labels: {app.kubernetes.io/name: meowth}
+      annotations:
+        poke-league.dev/pokemon: "52"
+    spec:
+      serviceAccountName: meowth              # Giovanni: its own ServiceAccount
+      automountServiceAccountToken: false
+      securityContext:                        # Brock
+        runAsNonRoot: true
+        runAsUser: 101
+        runAsGroup: 101
+        seccompProfile: {type: RuntimeDefault}
+      containers:
+        - name: web
+          image: kind-registry:5000/poke-league/meowth@<DIGEST>   # Erika (league registry, digest) + Koga (signed)
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef: {name: meowth-db, key: password}  # Misty
+          ports:
+            - containerPort: 8080             # the unprivileged image listens on 8080
+          securityContext:                    # Brock
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: ["ALL"]}
+          resources:                          # Lt. Surge
+            requests: {cpu: 10m, memory: 32Mi}
+            limits: {memory: 128Mi}
+          livenessProbe:                      # Sabrina
+            httpGet: {path: /, port: 8080}
+          readinessProbe:
+            httpGet: {path: /, port: 8080}
+          volumeMounts:
+            - {name: tmp, mountPath: /tmp}    # nginx needs one writable dir; the rest stays read-only
+      volumes:
+        - {name: tmp, emptyDir: {}}
+```
+
+**d. Check, then apply:**
+```bash
+k apply -f meowth-fixed.yaml --dry-run=server   # no warnings means every gym passes
+k apply -f meowth-fixed.yaml
+```
+Within a minute Meowth shows **8/8**, and once Trivy has rescanned, **shiny ✦** with 100 HP. To reset the lab:
+`k apply -f deploy/rocket/meowth.yaml`.
+</details>
+
+<details>
+<summary><b>Koffing 1</b>: take over the node</summary>
+
+```bash
+k -n team-rocket exec -it deploy/koffing -- chroot /host sh
+ls /etc/kubernetes/          # admin.conf and super-admin.conf: cluster-admin credentials
+exit
+```
+A privileged pod with the host filesystem mounted *is* the node.
+</details>
+
+<details>
+<summary><b>Koffing 2</b>: fix it</summary>
+
+Delete it (`k -n team-rocket delete deploy koffing`). For real node debugging, use the temporary, built-in tool, then
+remove the pod it creates:
+```bash
+k debug node/kanto-control-plane -it --image=busybox:1.36 -- chroot /host sh
+# when you're done: find the debug pod it created, and delete it
+k get pods -n default
+k delete pod node-debugger-kanto-control-plane-xxxxx -n default   # use the name from the line above
+```
+To bring the lab back: `k apply -f deploy/rocket/koffing.yaml`.
+</details>
+
+<details>
+<summary><b>Arbok 1</b>: why is a perfect manifest blocked?</summary>
+
+Its image was rebuilt by someone without the signing key, so it has no valid signature. See for yourself:
+```bash
+docker run --rm --network kind -v $PWD/.cosign:/keys ghcr.io/sigstore/cosign/cosign:v2.6.1 verify --key /keys/cosign.pub \
+  --allow-insecure-registry --allow-http-registry --insecure-ignore-tlog kind-registry:5000/poke-league/dex-api:dev            # ✅ verified
+docker run --rm --network kind -v $PWD/.cosign:/keys ghcr.io/sigstore/cosign/cosign:v2.6.1 verify --key /keys/cosign.pub \
+  --allow-insecure-registry --allow-http-registry --insecure-ignore-tlog kind-registry:5000/poke-league/dex-api:arbok-poisoned # ❌ no signatures found
+```
+</details>
+
+<details>
+<summary><b>Arbok 2</b>: fix it (and why you might not want to)</summary>
+
+Get the registry digest the same way as in *Meowth 3b* (with `manifests/arbok-poisoned`), sign it with the same
+`cosign sign` command, then restart Arbok so the gyms judge it again:
+```bash
+k -n team-rocket rollout restart deploy/arbok
+```
+It earns 8/8. (Kyverno caches signature checks for a few minutes, so if Koga still says "unsigned", wait and restart
+it again. That cache is another reason real deployments pin images by digest.) The real lesson is the question: **should** you have signed an image you didn't build? A signature
+proves who built something, not that it's safe. In real pipelines only CI holds the signing identity.
+</details>
+
+<details>
+<summary><b>Gym exercises</b>: what each gym wants (quick reference)</summary>
+
+| Gym | Add or change in the manifest |
+|---|---|
+| Brock 🪨 | Pod: `runAsNonRoot: true`, `seccompProfile: {type: RuntimeDefault}`. Container: `allowPrivilegeEscalation: false`, `readOnlyRootFilesystem: true`, `capabilities: {drop: ["ALL"]}` |
+| Misty 💧 | Secret-looking env vars use `valueFrom.secretKeyRef`, never `value:` |
+| Lt. Surge ⚡ | `resources.requests.cpu`, `resources.requests.memory`, `resources.limits.memory` |
+| Erika 🌿 | An image from `kind-registry:5000/poke-league/` with a tag or digest, never `:latest` |
+| Koga 💜 | The image is signed with the league's cosign key |
+| Sabrina 👁️ | Both a `livenessProbe` and a `readinessProbe` |
+| Blaine 🔥 | No `privileged`, `hostNetwork`, `hostPID`, `hostIPC` or `hostPath` |
+| Giovanni ⛰️ | Its own ServiceAccount (not `default`), plus `automountServiceAccountToken: false` unless it needs the API |
+</details>
 
 ## Repository layout
 
