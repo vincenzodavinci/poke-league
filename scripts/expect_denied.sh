@@ -6,6 +6,11 @@
 # exactly <gyms> (space-separated, alphabetical: e.g. "erika koga").
 # Anything else fails, including a request that errored for an unrelated
 # reason: a security check that can't tell "blocked" from "broken" must fail.
+#
+# "Exactly" means the gyms Kubernetes reached. Koga (an ImageValidatingPolicy)
+# runs in a separate webhook from the other seven, and the first webhook to
+# deny ends the request, so Koga shows up only when it's the one gym failing.
+# That's why the Arbok tests matter: there, Koga alone has to catch it.
 set -euo pipefail
 name=$1 want=$2
 ctx=${CTX:-kind-kanto}
