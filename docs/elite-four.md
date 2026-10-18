@@ -80,9 +80,35 @@ signed. (The local `make sign` flow uses v2 and the classic format, so the two n
 A fresh runner, `make demo`, then three assertions:
 
 1. Every non-Rocket workload holds **8/8 badges** (read from `/api/league`).
-2. **Every Team Rocket manifest is denied** when retargeted at `indigo-plateau`.
+2. **Every Team Rocket manifest is denied** when retargeted at `indigo-plateau`, and **by exactly the right gyms**. The
+   step fails if a request is admitted, if it fails for any reason other than an admission denial (a missing namespace,
+   an API error), or if the set of gyms that refused it isn't the expected one. Arbok must be refused by Koga *alone*,
+   which proves the other seven gyms really pass it. Then a **positive control**: a fresh copy of the real `dex-api`
+   must still be admitted, because a gate that refuses everything would pass every negative test.
 3. **OWASP ZAP baseline** (DAST) scans the live League Board. The strict CSP and security headers in
    [`internal/httpx`](../internal/httpx/httpx.go) are what it checks for.
+
+## Control validation matrix
+
+Every control has a case that must pass and a case that must fail, and CI runs both. A control that is only ever tested
+against bad input can't tell "blocking" apart from "broken".
+
+| Gym | Must pass | Must fail (incl. subtle bypasses) | Where |
+|---|---|---|---|
+| Brock · hardened pods | `champion` | `meowth`, `koffing`, `board-with-token`, `soft-init` (only the *init* container is soft) | Pallet Town (Kyverno CLI), Champion |
+| Misty · no plaintext secrets | `champion`, `koffing` | `meowth` | Pallet Town, Champion |
+| Lt. Surge · resource limits | `champion` | `meowth`, `koffing`, `board-with-token` | Pallet Town, Champion |
+| Erika · trusted images | `champion`, `board-with-token` | `meowth`, `koffing`, `latest-tag`, `no-tag` (implicit `:latest`), `lookalike-registry` (`poke-league-evil/`) | Pallet Town, Champion |
+| Koga · signed images | the 3 league images, signed by `make sign` | `arbok`: right registry, real tag, flawless manifest, unsigned extra layer | Champion (needs a real registry) |
+| Sabrina · health probes | `champion` | `meowth`, `koffing` | Pallet Town, Champion |
+| Blaine · no host access | `champion`, `meowth` | `koffing` | Pallet Town, Champion |
+| Giovanni · least privilege | `champion`, `board-with-token` (annotated opt-in) | `meowth`, `koffing` | Pallet Town, Champion |
+| All 16 policies loaded | `make policies` waits for 16/16 Ready | a policy set with Koga missing fails to render | Champion (`make demo`) |
+| Lorelei · secret scan | full history, no findings | a scan of 0 commits fails the job | Lorelei |
+
+The `Must pass`/`Must fail` resources live in [`deploy/policies/tests/resources.yaml`](../deploy/policies/tests/resources.yaml),
+and the expected verdicts in [`kyverno-test.yaml`](../deploy/policies/tests/kyverno-test.yaml). Run them locally with
+`make policy-test`.
 
 ## Supply-chain hygiene in the workflow itself
 

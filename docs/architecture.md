@@ -61,6 +61,45 @@ instead of an error. All of it is unit-tested against fake clients ([`board_test
   kind's default CNI (kindnet) enforces NetworkPolicies, so this is real, not decoration.
 - **Every cluster command names its context.** See field note 1.
 
+## Threat model and what's simplified
+
+**What the league defends against.**
+- *A compromised app container.* Brock, Blaine and Giovanni keep an attacker with code execution in a very small box: no
+  root, no capabilities, no writable filesystem, no host access, no API token. The NetworkPolicies stop lateral movement.
+- *Misconfigured manifests reaching prod.* Every gym runs at admission, and the same rules run in audit mode in dev first.
+- *A poisoned image in the registry.* Koga verifies the signature on the exact digest being deployed.
+- *Secrets in Git.* Misty catches them in manifests, and Lorelei scans the whole history.
+- *A compromised dependency or CI action.* Agatha and Bruno scan dependencies and code, and every action is pinned to a
+  commit SHA.
+
+**What it assumes, or leaves out.**
+- *Cluster admins and Kyverno itself are trusted.* Anyone who can edit policies, `PolicyException`s or the Kyverno
+  namespace can turn the gyms off.
+- *Gyms apply by namespace label.* Only namespaces labelled `poke-league.dev/league=true` are judged, so whoever can
+  edit namespace labels can opt out. Production should match every namespace and exclude only system ones.
+- *Kyverno runs one replica, and its webhook fails closed.* If Kyverno is down, new pods in league namespaces can't be
+  created. That's the safe default, but in production it needs HA (3+ replicas).
+- *No runtime detection.* The gyms judge what's *deployed*, not what a running process *does*. See Koffing's discussion
+  question.
+- *Images are signed with a key on your laptop.* CI signs keylessly, but the local cluster trusts the key pair (see
+  [Lance](elite-four.md#-lance-build-sign-attest)).
+
+**Educational simplifications.** One kind node, a plain-HTTP local registry, Kubernetes Secrets stored base64 in etcd
+without encryption at rest, no TLS between services, a NodePort for the board, and `kubectl apply` instead of GitOps.
+Each is a deliberate trade for a laptop that runs everything with one `make demo`.
+
+**Taking it to EKS, AKS or OpenShift.**
+
+| Here | In production |
+|---|---|
+| `kind-registry:5000` + cosign key pair | ECR, ACR or Quay, and Koga verifies Lance's **keyless** GitHub Actions identity |
+| Kubernetes Secrets | External Secrets Operator or the CSI driver, backed by AWS Secrets Manager, Key Vault or Vault, plus etcd encryption via KMS |
+| One Kyverno replica | 3+ replicas, a PodDisruptionBudget, and alerts on webhook latency and errors |
+| Pod Security Admission | the same on EKS and AKS; on OpenShift, Security Context Constraints (`restricted-v2`) do this job |
+| `make deploy` | Argo CD or Flux, so every change is reviewed, and rollback is a `git revert` |
+| default SA tokens off | plus IRSA / EKS Pod Identity or Azure Workload Identity for pods that need cloud access |
+| — | runtime detection (Falco or Tetragon), audit logs shipped off-cluster, mTLS (a service mesh) |
+
 ## Field notes: real bugs from building this
 
 These all happened while the repo was being built. Each one is a lesson in its own right.
@@ -84,6 +123,11 @@ These all happened while the repo was being built. Each one is a lesson in its o
    reached the board went to it. The board now uses 8088.
 7. **"Too many open files".** kind nodes run systemd, which needs inotify instances. On Colima (and some Linux hosts)
    the default `fs.inotify.max_user_instances` runs out once a few clusters exist. See Troubleshooting.
+8. **The gate that passed when it couldn't tell.** The first "Team Rocket can't get into prod" check failed only if
+   `kubectl` printed `deployment.apps/... created`. Anything else counted as "denied as expected", including a request
+   that failed because the namespace didn't exist. The check now requires an admission denial, from exactly the
+   expected gyms, plus a known-good workload that must still be admitted (see
+   [Champion](elite-four.md#-champion-end-to-end)). Same lesson as note 2: a security check must fail closed.
 
 ## Troubleshooting
 
