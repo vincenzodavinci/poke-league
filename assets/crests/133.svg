@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="eevee crest">
+<defs>
+<radialGradient id="b" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#d8d8b0"/><stop offset=".55" stop-color="#a8a878"/><stop offset="1" stop-color="#6d6d4e"/></radialGradient>
+<linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d8d8b0"/><stop offset="1" stop-color="#6d6d4e"/></linearGradient>
+<radialGradient id="g" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#d8d8b0"/><stop offset="1" stop-color="#a8a878"/></radialGradient>
+</defs>
+<path d="M40.7 117.1 L71.4 91.5 L82.0 52.8 L121.3 61.0 L158.1 45.1 L176.2 80.9 L211.2 100.0 L194.9 136.4 L202.0 175.7 L163.2 185.5 L136.7 215.1 L105.0 191.3 L63.5 190.9 L64.1 149.5 Z" fill="url(#s)" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="128" cy="128" r="60.9" fill="url(#b)" stroke="#0b1024" stroke-width="3"/>
+<circle cx="128" cy="128" r="52.9" fill="none" stroke="#6d6d4e" stroke-width="2.5" stroke-dasharray="0" opacity=".7"/>
+<circle cx="128" cy="128" r="45.9" fill="none" stroke="#6d6d4e" stroke-width="2.5" stroke-dasharray="10 5" opacity=".7"/>
+<polygon points="106.1,125.3 130.7,106.1 149.9,130.7 125.3,149.9" fill="url(#g)" stroke="#0b1024" stroke-width="2.5" stroke-linejoin="round"/>
+<line x1="128" y1="128" x2="106.1" y2="125.3" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="130.7" y2="106.1" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="149.9" y2="130.7" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<g transform="translate(128 128) scale(0.502)"><path d="M0 -30 L7 -7 L30 0 L7 7 L0 30 L-7 7 L-30 0 L-7 -7 Z" fill="#ffffff" fill-rule="evenodd" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/></g>
+<ellipse cx="106.7" cy="100.6" rx="19.5" ry="9.8" fill="#ffffff" opacity=".35" transform="rotate(-30 106.7 100.6)"/>
+</svg>

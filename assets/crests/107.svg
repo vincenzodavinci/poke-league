@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="hitmonchan crest">
+<defs>
+<radialGradient id="b" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#f08080"/><stop offset=".55" stop-color="#c03028"/><stop offset="1" stop-color="#7d1f1a"/></radialGradient>
+<linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f08080"/><stop offset="1" stop-color="#7d1f1a"/></linearGradient>
+<radialGradient id="g" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#f08080"/><stop offset="1" stop-color="#c03028"/></radialGradient>
+</defs>
+<path d="M77.7 38.5 A102.6 102.6 0 0 1 184.9 42.6" fill="none" stroke="#c03028" stroke-width="4.0" stroke-linecap="round" opacity="0.75"/>
+<path d="M53.7 70.5 L89.0 70.8 L100.3 32.9 L130.1 58.8 L161.8 33.7 L170.4 73.2 L205.8 75.0 L194.5 108.6 L222.0 130.9 L193.2 151.4 L200.2 183.9 L167.0 185.2 L156.1 224.5 L125.9 197.2 L93.8 223.3 L85.6 182.8 L48.7 182.0 L61.5 147.4 L30.3 125.0 L62.8 104.6 Z" fill="url(#s)" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="128" cy="128" r="60.1" fill="url(#b)" stroke="#0b1024" stroke-width="3"/>
+<circle cx="128" cy="128" r="52.1" fill="none" stroke="#7d1f1a" stroke-width="2.5" stroke-dasharray="0" opacity=".7"/>
+<circle cx="128" cy="128" r="45.1" fill="none" stroke="#7d1f1a" stroke-width="2.5" stroke-dasharray="3 4" opacity=".7"/>
+<circle cx="128" cy="128" r="30.2" fill="none" stroke="#ffffff" stroke-width="2" opacity=".75"/>
+<polygon points="111.3,115.0 141.0,111.3 144.7,141.0 115.0,144.7" fill="url(#g)" stroke="#0b1024" stroke-width="2.5" stroke-linejoin="round"/>
+<line x1="128" y1="128" x2="111.3" y2="115.0" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="141.0" y2="111.3" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="144.7" y2="141.0" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<g transform="translate(128 128) scale(0.481)"><path d="M-22 -22 L22 22 M22 -22 L-22 22 M-28 -10 L-10 -28 M10 28 L28 10" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></g>
+<ellipse cx="107.0" cy="100.9" rx="19.2" ry="9.6" fill="#ffffff" opacity=".35" transform="rotate(-30 107.0 100.9)"/>
+</svg>

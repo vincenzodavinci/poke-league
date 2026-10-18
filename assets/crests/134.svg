@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="vaporeon crest">
+<defs>
+<radialGradient id="b" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#b0c8ff"/><stop offset=".55" stop-color="#6890f0"/><stop offset="1" stop-color="#445e9c"/></radialGradient>
+<linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b0c8ff"/><stop offset="1" stop-color="#445e9c"/></linearGradient>
+<radialGradient id="g" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#b0c8ff"/><stop offset="1" stop-color="#6890f0"/></radialGradient>
+</defs>
+<path d="M88.2 189.4 C69.0 199.0 40.6 157.7 56.5 143.2 C36.1 136.5 45.2 87.2 66.6 88.2 C57.0 69.0 98.3 40.6 112.8 56.5 C119.5 36.1 168.8 45.2 167.8 66.6 C187.0 57.0 215.4 98.3 199.5 112.8 C219.9 119.5 210.8 168.8 189.4 167.8 C199.0 187.0 157.7 215.4 143.2 199.5 C136.5 219.9 87.2 210.8 88.2 189.4 Z" fill="url(#s)" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="128" cy="128" r="73.1" fill="url(#b)" stroke="#0b1024" stroke-width="3"/>
+<circle cx="128" cy="128" r="65.1" fill="none" stroke="#445e9c" stroke-width="2.5" stroke-dasharray="18 6" opacity=".7"/>
+<circle cx="128" cy="128" r="58.1" fill="none" stroke="#445e9c" stroke-width="2.5" stroke-dasharray="3 4" opacity=".7"/>
+<circle cx="128" cy="128" r="37.0" fill="none" stroke="#ffffff" stroke-width="2" opacity=".75"/>
+<polygon points="112.8,151.5 100.0,126.6 115.3,103.1 143.2,104.5 156.0,129.4 140.7,152.9" fill="url(#g)" stroke="#0b1024" stroke-width="2.5" stroke-linejoin="round"/>
+<line x1="128" y1="128" x2="112.8" y2="151.5" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="100.0" y2="126.6" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="115.3" y2="103.1" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="143.2" y2="104.5" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<g transform="translate(128 128) scale(0.636)"><path d="M-30 4 C-20 -8 -10 -8 0 4 C10 16 20 16 30 4 M-30 18 C-20 6 -10 6 0 18 C10 30 20 30 30 18 M-30 -10 C-20 -22 -10 -22 0 -10 C10 2 20 2 30 -10" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></g>
+<ellipse cx="102.4" cy="95.1" rx="23.4" ry="11.7" fill="#ffffff" opacity=".35" transform="rotate(-30 102.4 95.1)"/>
+</svg>

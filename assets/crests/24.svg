@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="arbok crest">
+<defs>
+<radialGradient id="b" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#e0a0e0"/><stop offset=".55" stop-color="#a040a0"/><stop offset="1" stop-color="#682a68"/></radialGradient>
+<linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e0a0e0"/><stop offset="1" stop-color="#682a68"/></linearGradient>
+<radialGradient id="g" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#e0a0e0"/><stop offset="1" stop-color="#a040a0"/></radialGradient>
+</defs>
+<path d="M102.2 226.8 A102.1 102.1 0 0 1 28.3 149.9" fill="none" stroke="#a040a0" stroke-width="4.0" stroke-linecap="round" opacity="0.75"/>
+<path d="M137.9 195.9 Q138.6 223.5 110.5 212.5 T91.9 186.4 Q74.7 208.0 56.7 184.3 T62.9 149.5 Q35.8 155.0 30.8 125.1 T64.2 102.6 Q40.0 89.4 60.5 67.9 T95.5 67.6 Q85.4 41.8 115.6 43.1 T141.9 60.8 Q150.8 34.6 179.1 45.2 T181.9 85.5 Q205.5 71.1 209.5 101.1 T196.6 130.0 Q223.9 134.2 208.4 160.0 T179.2 173.6 Q197.5 194.4 171.6 209.0 T137.9 195.9 Z" fill="url(#s)" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="128" cy="128" r="61.8" fill="url(#b)" stroke="#0b1024" stroke-width="3"/>
+<circle cx="128" cy="128" r="53.8" fill="none" stroke="#682a68" stroke-width="2.5" stroke-dasharray="3 4" opacity=".7"/>
+<circle cx="128" cy="128" r="46.8" fill="none" stroke="#682a68" stroke-width="2.5" stroke-dasharray="10 5" opacity=".7"/>
+<polygon points="131.5,151.7 106.6,138.6 111.3,110.9 139.1,106.8 151.6,132.0" fill="url(#g)" stroke="#0b1024" stroke-width="2.5" stroke-linejoin="round"/>
+<line x1="128" y1="128" x2="131.5" y2="151.7" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="106.6" y2="138.6" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="111.3" y2="110.9" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<g transform="translate(128 128) scale(0.543)"><path d="M0 -30 C14 -12 20 0 20 10 A20 20 0 0 1 -20 10 C-20 0 -14 -12 0 -30 Z" fill="#ffffff" fill-rule="evenodd" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/></g>
+<ellipse cx="106.4" cy="100.2" rx="19.8" ry="9.9" fill="#ffffff" opacity=".35" transform="rotate(-30 106.4 100.2)"/>
+</svg>

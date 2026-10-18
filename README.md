@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/pokemon/137.png" width="140" alt="Porygon, the Poké League mascot">
+  <img src="assets/crests/137.svg" width="140" alt="Porygon crest, the Poké League mascot">
 </p>
 
 <h1 align="center">Poké League</h1>
@@ -19,14 +19,14 @@
 </p>
 
 <p align="center">
-  <img src="assets/badges/1.png" width="36" alt="Boulder Badge">
-  <img src="assets/badges/2.png" width="36" alt="Cascade Badge">
-  <img src="assets/badges/3.png" width="36" alt="Thunder Badge">
-  <img src="assets/badges/4.png" width="36" alt="Rainbow Badge">
-  <img src="assets/badges/5.png" width="36" alt="Soul Badge">
-  <img src="assets/badges/6.png" width="36" alt="Marsh Badge">
-  <img src="assets/badges/7.png" width="36" alt="Volcano Badge">
-  <img src="assets/badges/8.png" width="36" alt="Earth Badge">
+  <img src="assets/badges/1.svg" width="36" alt="Boulder Badge">
+  <img src="assets/badges/2.svg" width="36" alt="Cascade Badge">
+  <img src="assets/badges/3.svg" width="36" alt="Thunder Badge">
+  <img src="assets/badges/4.svg" width="36" alt="Rainbow Badge">
+  <img src="assets/badges/5.svg" width="36" alt="Soul Badge">
+  <img src="assets/badges/6.svg" width="36" alt="Marsh Badge">
+  <img src="assets/badges/7.svg" width="36" alt="Volcano Badge">
+  <img src="assets/badges/8.svg" width="36" alt="Earth Badge">
 </p>
 
 <p align="center">
@@ -35,7 +35,7 @@
 
 ## Why I built this
 
-<img src="assets/pokemon/6.png" width="110" align="right" alt="Charizard">
+<img src="assets/crests/6.svg" width="110" align="right" alt="Charizard crest">
 
 **This project exists because of my love for Pokémon FireRed.**
 
@@ -93,14 +93,14 @@ Every `kubectl`/`helm` command in the Makefile is pinned to the `kind-kanto` con
 
 | | Gym | Policy | What it teaches |
 |:-:|---|---|---|
-| <img src="assets/badges/1.png" width="28"> <img src="assets/pokemon/95.png" width="44"> | **Brock** · Boulder | `brock-hardened-pods` | Pod hardening: non-root, seccomp, no privilege escalation, read-only root FS, drop all capabilities |
-| <img src="assets/badges/2.png" width="28"> <img src="assets/pokemon/121.png" width="44"> | **Misty** · Cascade | `misty-no-plaintext-secrets` | Secrets belong in `Secret` refs, never as literals in Git |
-| <img src="assets/badges/3.png" width="28"> <img src="assets/pokemon/26.png" width="44"> | **Lt. Surge** · Thunder | `surge-resource-limits` | Requests and limits: scheduling, and stopping noisy-neighbour DoS |
-| <img src="assets/badges/4.png" width="28"> <img src="assets/pokemon/45.png" width="44"> | **Erika** · Rainbow | `erika-trusted-images` | Trusted registries, pinned versions, why `:latest` is not a version |
-| <img src="assets/badges/5.png" width="28"> <img src="assets/pokemon/110.png" width="44"> | **Koga** · Soul | `koga-signed-images` | Supply-chain integrity: only cosign-signed images run |
-| <img src="assets/badges/6.png" width="28"> <img src="assets/pokemon/65.png" width="44"> | **Sabrina** · Marsh | `sabrina-health-probes` | Liveness/readiness probes and self-healing |
-| <img src="assets/badges/7.png" width="28"> <img src="assets/pokemon/59.png" width="44"> | **Blaine** · Volcano | `blaine-no-host-access` | Container escape routes: privileged, host namespaces, hostPath |
-| <img src="assets/badges/8.png" width="28"> <img src="assets/pokemon/112.png" width="44"> | **Giovanni** · Earth | `giovanni-least-privilege` | Workload identity: own ServiceAccount, API tokens only on opt-in, least-privilege RBAC |
+| <img src="assets/badges/1.svg" width="28"> <img src="assets/crests/95.svg" width="44"> | **Brock** · Boulder | `brock-hardened-pods` | Pod hardening: non-root, seccomp, no privilege escalation, read-only root FS, drop all capabilities |
+| <img src="assets/badges/2.svg" width="28"> <img src="assets/crests/121.svg" width="44"> | **Misty** · Cascade | `misty-no-plaintext-secrets` | Secrets belong in `Secret` refs, never as literals in Git |
+| <img src="assets/badges/3.svg" width="28"> <img src="assets/crests/26.svg" width="44"> | **Lt. Surge** · Thunder | `surge-resource-limits` | Requests and limits: scheduling, and stopping noisy-neighbour DoS |
+| <img src="assets/badges/4.svg" width="28"> <img src="assets/crests/45.svg" width="44"> | **Erika** · Rainbow | `erika-trusted-images` | Trusted registries, pinned versions, why `:latest` is not a version |
+| <img src="assets/badges/5.svg" width="28"> <img src="assets/crests/110.svg" width="44"> | **Koga** · Soul | `koga-signed-images` | Supply-chain integrity: only cosign-signed images run |
+| <img src="assets/badges/6.svg" width="28"> <img src="assets/crests/65.svg" width="44"> | **Sabrina** · Marsh | `sabrina-health-probes` | Liveness/readiness probes and self-healing |
+| <img src="assets/badges/7.svg" width="28"> <img src="assets/crests/59.svg" width="44"> | **Blaine** · Volcano | `blaine-no-host-access` | Container escape routes: privileged, host namespaces, hostPath |
+| <img src="assets/badges/8.svg" width="28"> <img src="assets/crests/112.svg" width="44"> | **Giovanni** · Earth | `giovanni-least-privilege` | Workload identity: own ServiceAccount, API tokens only on opt-in, least-privilege RBAC |
 
 Each one is explained, with a hands-on exercise, in **[docs/gyms.md](docs/gyms.md)**.
 
@@ -111,9 +111,9 @@ Each one is explained, with a hands-on exercise, in **[docs/gyms.md](docs/gyms.m
 ## Team Rocket's hideout
 
 <p>
-  <img src="assets/pokemon/52.png" width="64" alt="Meowth">
-  <img src="assets/pokemon/109.png" width="64" alt="Koffing">
-  <img src="assets/pokemon/24.png" width="64" alt="Arbok">
+  <img src="assets/crests/52.svg" width="64" alt="Meowth">
+  <img src="assets/crests/109.svg" width="64" alt="Koffing">
+  <img src="assets/crests/24.svg" width="64" alt="Arbok">
 </p>
 
 Three workloads that fail on purpose, each a pattern you'll meet in real clusters:
@@ -130,27 +130,51 @@ Steal the token, escape to the node, then fix each one until it's shiny: **[docs
 
 | | Stage | Tools |
 |---|---|---|
-| <img src="assets/pokemon/131.png" width="40"> | **Lorelei** · secrets | gitleaks, over the full Git history |
-| <img src="assets/pokemon/68.png" width="40"> | **Bruno** · SAST | Semgrep (Go, Dockerfile, Kubernetes, Actions rules), govulncheck |
-| <img src="assets/pokemon/94.png" width="40"> | **Agatha** · dependencies | Trivy (vulns, misconfig, secrets), SPDX SBOM |
-| <img src="assets/pokemon/149.png" width="40"> | **Lance** · supply chain | Buildx, keyless cosign signing (OIDC → Fulcio → Rekor), signed SBOM attestation, SLSA provenance |
-| <img src="assets/pokemon/6.png" width="40"> | **Champion** · end-to-end | `make demo` on a fresh kind cluster, assert 8/8 badges, assert Team Rocket is denied in prod, OWASP ZAP DAST scan |
+| <img src="assets/crests/131.svg" width="40"> | **Lorelei** · secrets | gitleaks, over the full Git history |
+| <img src="assets/crests/68.svg" width="40"> | **Bruno** · SAST | Semgrep (Go, Dockerfile, Kubernetes, Actions rules), govulncheck |
+| <img src="assets/crests/94.svg" width="40"> | **Agatha** · dependencies | Trivy (vulns, misconfig, secrets), SPDX SBOM |
+| <img src="assets/crests/149.svg" width="40"> | **Lance** · supply chain | Buildx, keyless cosign signing (OIDC → Fulcio → Rekor), signed SBOM attestation, SLSA provenance |
+| <img src="assets/crests/6.svg" width="40"> | **Champion** · end-to-end | `make demo` on a fresh kind cluster, assert 8/8 badges, assert Team Rocket is denied in prod, OWASP ZAP DAST scan |
 
 Every third-party action is pinned to a commit SHA, permissions are least-privilege per job, and Dependabot keeps Go modules, base-image digests and actions current. Details: **[docs/elite-four.md](docs/elite-four.md)**.
 
 ## The Pokédex
 
-The app the league protects: all 151 Kanto Pokémon with **Gen 3 (FireRed) typings**, so Clefairy is Normal and Magnemite is Electric/Steel, plus FireRed Pokédex text and base stats.
+The app the league protects: all 151 Kanto Pokémon with **Gen 3 (FireRed) typings**, so Clefairy is Normal and Magnemite is Electric/Steel, plus base stats, heights and weights.
 
 <p align="center">
   <img src="docs/images/pokedex.png" width="860" alt="The Pokédex tab: searchable grid of Kanto Pokémon with Gen 3 type colors">
 </p>
 
+## The art: Dex Crests
+
+Every Pokémon is shown as an original **Dex Crest**, generated by [`scripts/make_crests.py`](scripts/make_crests.py)
+from its real Gen 3 data, so no official artwork is used:
+
+| Data | Becomes |
+|---|---|
+| Primary type | the silhouette (flame tips for Fire, waves for Water, crenellations for Rock…) and the core glyph |
+| Secondary type | the rim color |
+| HP · Attack · Defense | size · number and reach of points · armor rings |
+| Sp. Atk · Sp. Def · Speed | facets on the core gem · a halo · motion arcs |
+
+<p>
+  <img src="assets/crests/6.svg" width="72" alt="Charizard crest">
+  <img src="assets/crests/94.svg" width="72" alt="Gengar crest">
+  <img src="assets/crests/143.svg" width="72" alt="Snorlax crest">
+  <img src="assets/crests/95.svg" width="72" alt="Onix crest">
+  <img src="assets/crests/151.svg" width="72" alt="Mew crest">
+  <img src="assets/crests/129.svg" width="72" alt="Magikarp crest">
+</p>
+
+Charizard is fire-orange with flame tips and speed arcs; Snorlax is huge (all that HP); Magikarp, with base Attack 10,
+is small and humble. The gym badges are original sigils too.
+
 ## How it fits together
 
 ```
  browser ──► league-board (NodePort) ──► dex-api      Kanto dex JSON (embedded)
-               │      │                └► sprite-svc   artwork, badges, items (embedded)
+               │      │                └► sprite-svc   crests and gym sigils (embedded)
                │      └─ reads ─► PolicyReports (Kyverno) + VulnerabilityReports (Trivy)
                │
   kubectl apply ─► Kyverno admission ─► 8 gyms × {audit: pallet-town, team-rocket | enforce: indigo-plateau}
@@ -172,7 +196,7 @@ Architecture, design decisions and the field notes from building it (the bugs wo
 ## Repository layout
 
 ```
-assets/            artwork (#1–151), Kanto badges, items · embedded into sprite-svc
+assets/            original art: 151 Dex Crests, 8 gym sigils, favicon · embedded into sprite-svc
 data/              FireRed-accurate Kanto dex · embedded into dex-api
 cmd/               dex-api, sprite-svc, league-board
 internal/          httpx (secure headers, timeouts, graceful shutdown), dex, sprites, board
@@ -182,12 +206,15 @@ deploy/kind/       the "kanto" cluster + local registry
 deploy/k8s/        namespaces + PSA, RBAC, hardened Deployments, NetworkPolicies, dev/prod overlays
 deploy/policies/   the 8 gyms (CEL), audit/enforce overlays, Kyverno CLI tests
 deploy/rocket/     Team Rocket's lab workloads
-scripts/           fetch_assets.py (PokeAPI), render_policies.py (cosign key → Koga)
+scripts/           fetch_assets.py (dex facts), make_crests.py (the art), render_policies.py (cosign key → Koga)
 .github/           the Elite Four pipeline, Dependabot
 ```
 
 ## Credits and legal
 
-This is a non-commercial, fan-made learning project. Pokémon, the Pokémon artwork, badge designs and names are © Nintendo, Creatures Inc., GAME FREAK inc. and The Pokémon Company. They're used here for education and aren't covered by this repository's license. Artwork and data come from [PokeAPI](https://pokeapi.co) and its [sprites repository](https://github.com/PokeAPI/sprites), and are re-downloadable with `make assets`.
+A non-commercial, fan-made learning project, **not affiliated with or endorsed by** Nintendo, Creatures Inc., GAME FREAK
+inc. or The Pokémon Company. Pokémon, character, place and badge names are their trademarks, used here only to refer
+to them. **No official artwork, sprites or game text are included.** Every image is original, generated by
+`scripts/make_crests.py`. Dex facts (names, types, stats) come from [PokeAPI](https://pokeapi.co).
 
-The code (everything outside `assets/` and `data/`) is MIT licensed. See [LICENSE](LICENSE).
+Everything here, including the original art, is MIT licensed. See [LICENSE](LICENSE).

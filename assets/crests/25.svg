@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="pikachu crest">
+<defs>
+<radialGradient id="b" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#fff0a0"/><stop offset=".55" stop-color="#f8d030"/><stop offset="1" stop-color="#a1871f"/></radialGradient>
+<linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0a0"/><stop offset="1" stop-color="#a1871f"/></linearGradient>
+<radialGradient id="g" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#fff0a0"/><stop offset="1" stop-color="#f8d030"/></radialGradient>
+</defs>
+<path d="M148.5 215.1 A89.5 89.5 0 0 1 59.7 185.8" fill="none" stroke="#f8d030" stroke-width="4.0" stroke-linecap="round" opacity="0.75"/>
+<path d="M177.2 195.4 L148.5 187.4 L130.4 201.1 L106.0 208.5 L94.3 181.0 L72.3 175.4 L51.3 161.0 L65.5 134.7 L56.2 114.0 L54.4 88.6 L83.8 83.3 L94.1 63.2 L112.9 45.9 L135.3 65.6 L157.6 61.1 L182.8 65.0 L181.4 94.8 L198.8 109.4 L211.4 131.5 L187.2 149.0 L186.6 171.7 Z" fill="url(#s)" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="128" cy="128" r="57.7" fill="url(#b)" stroke="#0b1024" stroke-width="3"/>
+<circle cx="128" cy="128" r="49.7" fill="none" stroke="#a1871f" stroke-width="2.5" stroke-dasharray="3 4" opacity=".7"/>
+<polygon points="141.3,146.2 109.8,141.3 114.7,109.8 146.2,114.7" fill="url(#g)" stroke="#0b1024" stroke-width="2.5" stroke-linejoin="round"/>
+<line x1="128" y1="128" x2="141.3" y2="146.2" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="109.8" y2="141.3" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="114.7" y2="109.8" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<g transform="translate(128 128) scale(0.512)"><path d="M6 -30 L-16 4 L-2 4 L-8 30 L16 -6 L2 -6 Z" fill="#ffffff" fill-rule="evenodd" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/></g>
+<ellipse cx="107.8" cy="102.0" rx="18.5" ry="9.2" fill="#ffffff" opacity=".35" transform="rotate(-30 107.8 102.0)"/>
+</svg>

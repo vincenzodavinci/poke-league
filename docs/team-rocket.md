@@ -16,7 +16,7 @@ alias k='kubectl --context kind-kanto'
 
 ---
 
-## <img src="../assets/pokemon/52.png" width="48"> Meowth: the copy-pasted Deployment {#meowth}
+## <img src="../assets/crests/52.svg" width="48"> Meowth: the copy-pasted Deployment {#meowth}
 
 [`deploy/rocket/meowth.yaml`](../deploy/rocket/meowth.yaml). **1/8 badges, and fainted once Trivy has scanned it.**
 
@@ -77,7 +77,7 @@ When it's shiny, try deploying it to `indigo-plateau`.
 
 ---
 
-## <img src="../assets/pokemon/109.png" width="48"> Koffing: the forgotten debug pod {#koffing}
+## <img src="../assets/crests/109.svg" width="48"> Koffing: the forgotten debug pod {#koffing}
 
 [`deploy/rocket/koffing.yaml`](../deploy/rocket/koffing.yaml). **1/8 badges.**
 
@@ -107,7 +107,7 @@ detection: look at Falco or Tetragon, and add one as a tenth gym.)
 
 ---
 
-## <img src="../assets/pokemon/24.png" width="48"> Arbok: the poisoned image {#arbok}
+## <img src="../assets/crests/24.svg" width="48"> Arbok: the poisoned image {#arbok}
 
 [`deploy/rocket/arbok.yaml`](../deploy/rocket/arbok.yaml). **7/8 badges.**
 

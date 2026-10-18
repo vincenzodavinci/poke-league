@@ -17,7 +17,7 @@ pallet-town ──► lorelei ─┐
 policy tests are the important part: **policies are code, so they get tests**, including deliberately tricky cases like
 `lookalike-registry` and `soft-init`.
 
-## <img src="../assets/pokemon/131.png" width="40"> Lorelei: secret scanning
+## <img src="../assets/crests/131.svg" width="40"> Lorelei: secret scanning
 
 [gitleaks](https://github.com/gitleaks/gitleaks) over the **full Git history** (`fetch-depth: 0`). A secret deleted in
 a later commit is still in the history. The only real fix is to rotate it.
@@ -29,7 +29,7 @@ The CI job also fails if gitleaks reports **0 commits scanned**. Run inside a co
 refuses to read it ("dubious ownership"), and gitleaks then reports "no leaks found" after checking nothing. A gate
 that can pass without looking is worse than no gate.
 
-## <img src="../assets/pokemon/68.png" width="40"> Bruno: static analysis
+## <img src="../assets/crests/68.svg" width="40"> Bruno: static analysis
 
 - **govulncheck** reports only vulnerabilities your code can *actually reach*, with the call path. While this repo was
   being built it caught GO-2026-6617 (an HTTP/2 server crash), reachable through `client-go` and `net/http`, which was
@@ -38,14 +38,14 @@ that can pass without looking is worse than no gate.
   fixtures are excluded in [`.semgrepignore`](../.semgrepignore), with the reason written down. A good exclusion is
   narrow and explains itself.
 
-## <img src="../assets/pokemon/94.png" width="40"> Agatha: dependencies and SBOM
+## <img src="../assets/crests/94.svg" width="40"> Agatha: dependencies and SBOM
 
 - **Trivy** in filesystem mode: vulnerable dependencies, IaC misconfiguration and secrets, failing on fixable
   HIGH/CRITICAL findings (`ignore-unfixed` keeps the gate actionable).
 - **SPDX SBOM** of the source, uploaded as a build artifact. An SBOM answers "are we affected?" in minutes the next time a
   Log4Shell happens.
 
-## <img src="../assets/pokemon/149.png" width="40"> Lance: build, sign, attest
+## <img src="../assets/crests/149.svg" width="40"> Lance: build, sign, attest
 
 Runs only on `main`, after all three Elite Four pass, once per service (matrix):
 
@@ -75,7 +75,7 @@ signed. (The local `make sign` flow uses v2 and the classic format, so the two n
 > keyless identity (`keyless.identities` with issuer `https://token.actions.githubusercontent.com`) is the natural next
 > step once you run against GHCR.
 
-## <img src="../assets/pokemon/6.png" width="40"> Champion: end-to-end
+## <img src="../assets/crests/6.svg" width="40"> Champion: end-to-end
 
 A fresh runner, `make demo`, then three assertions:
 

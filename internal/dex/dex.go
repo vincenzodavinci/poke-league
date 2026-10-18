@@ -10,7 +10,8 @@ import (
 	"strings"
 )
 
-// Pokemon is one Pokédex entry, with Gen 3 types and FireRed flavor text.
+// Pokemon is one Pokédex entry: names, Gen 3 types and base stats (facts only;
+// no copyrighted game text).
 type Pokemon struct {
 	ID     int            `json:"id"`
 	Name   string         `json:"name"`
@@ -18,7 +19,6 @@ type Pokemon struct {
 	Stats  map[string]int `json:"stats"`
 	Height int            `json:"height"`
 	Weight int            `json:"weight"`
-	Flavor string         `json:"flavor"`
 }
 
 // Store is an immutable, in-memory dex.

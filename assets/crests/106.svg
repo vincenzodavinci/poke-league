@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="hitmonlee crest">
+<defs>
+<radialGradient id="b" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#f08080"/><stop offset=".55" stop-color="#c03028"/><stop offset="1" stop-color="#7d1f1a"/></radialGradient>
+<linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f08080"/><stop offset="1" stop-color="#7d1f1a"/></linearGradient>
+<radialGradient id="g" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#f08080"/><stop offset="1" stop-color="#c03028"/></radialGradient>
+</defs>
+<path d="M69.7 216.3 A105.8 105.8 0 0 1 22.8 116.1" fill="none" stroke="#c03028" stroke-width="4.0" stroke-linecap="round" opacity="0.75"/>
+<path d="M110.5 222.4 L96.3 190.5 L56.0 204.6 L67.6 163.5 L29.9 152.5 L58.0 125.2 L32.8 95.8 L70.6 87.8 L67.9 52.7 L101.5 63.2 L117.3 24.0 L140.8 59.1 L174.9 35.4 L176.0 77.0 L210.5 79.6 L196.0 111.0 L222.2 131.8 L194.4 150.4 L212.8 187.5 L171.7 182.8 L165.5 219.9 L135.2 197.7 Z" fill="url(#s)" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="128" cy="128" r="60.1" fill="url(#b)" stroke="#0b1024" stroke-width="3"/>
+<circle cx="128" cy="128" r="52.1" fill="none" stroke="#7d1f1a" stroke-width="2.5" stroke-dasharray="3 4" opacity=".7"/>
+<circle cx="128" cy="128" r="45.1" fill="none" stroke="#7d1f1a" stroke-width="2.5" stroke-dasharray="0" opacity=".7"/>
+<circle cx="128" cy="128" r="30.2" fill="none" stroke="#ffffff" stroke-width="2" opacity=".75"/>
+<polygon points="124.1,148.8 107.2,124.1 131.9,107.2 148.8,131.9" fill="url(#g)" stroke="#0b1024" stroke-width="2.5" stroke-linejoin="round"/>
+<line x1="128" y1="128" x2="124.1" y2="148.8" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="107.2" y2="124.1" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="131.9" y2="107.2" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<g transform="translate(128 128) scale(0.481)"><path d="M-22 -22 L22 22 M22 -22 L-22 22 M-28 -10 L-10 -28 M10 28 L28 10" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></g>
+<ellipse cx="107.0" cy="100.9" rx="19.2" ry="9.6" fill="#ffffff" opacity=".35" transform="rotate(-30 107.0 100.9)"/>
+</svg>

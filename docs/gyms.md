@@ -37,7 +37,7 @@ too. Read the warnings it prints.
 
 ---
 
-## <img src="../assets/badges/1.png" width="28"> Gym 1 · Brock · `brock-hardened-pods`
+## <img src="../assets/badges/1.svg" width="28"> Gym 1 · Brock · `brock-hardened-pods`
 
 **Rule.** The pod sets `runAsNonRoot: true` and `seccompProfile: RuntimeDefault`. Every container (init containers
 included) sets `allowPrivilegeEscalation: false`, `readOnlyRootFilesystem: true` and `capabilities.drop: [ALL]`.
@@ -57,7 +57,7 @@ the Boulder Badge go dark on the board. Then apply the same file to `indigo-plat
 `pod-security.kubernetes.io/*` labels in [`namespaces.yaml`](../deploy/k8s/cluster/namespaces.yaml). Prod enforces
 `restricted`, so Brock and PSA are two independent layers.
 
-## <img src="../assets/badges/2.png" width="28"> Gym 2 · Misty · `misty-no-plaintext-secrets`
+## <img src="../assets/badges/2.svg" width="28"> Gym 2 · Misty · `misty-no-plaintext-secrets`
 
 **Rule.** An env var whose name looks like a credential (`*PASSWORD*`, `*SECRET*`, `*TOKEN*`, `*API_KEY*`,
 `*PRIVATE_KEY*`) must use `valueFrom.secretKeyRef`, not `value:`.
@@ -78,7 +78,7 @@ the repo with entropy and signature rules. Defense in depth.
 **Go further.** Kubernetes Secrets are only base64-encoded. Look at External Secrets Operator or Sealed Secrets, and at
 encryption at rest for etcd.
 
-## <img src="../assets/badges/3.png" width="28"> Gym 3 · Lt. Surge · `surge-resource-limits`
+## <img src="../assets/badges/3.svg" width="28"> Gym 3 · Lt. Surge · `surge-resource-limits`
 
 **Rule.** Every container declares CPU and memory **requests** and a memory **limit**.
 
@@ -89,7 +89,7 @@ limits often cause more throttling harm than good. That's a real debate worth re
 
 **Try it.** Remove `limits` from a copy of `sprite-svc.yaml` and apply it to `pallet-town`.
 
-## <img src="../assets/badges/4.png" width="28"> Gym 4 · Erika · `erika-trusted-images`
+## <img src="../assets/badges/4.svg" width="28"> Gym 4 · Erika · `erika-trusted-images`
 
 **Rule.** Images come from `kind-registry:5000/poke-league/` and carry a version tag or digest. `:latest`, and images with
 no tag at all (which means `:latest`), are rejected.
@@ -103,7 +103,7 @@ point at different bytes tomorrow, so you can't reproduce, roll back or audit wh
 
 **Try it.** `k -n pallet-town run latest --image=kind-registry:5000/poke-league/dex-api:latest --dry-run=server`
 
-## <img src="../assets/badges/5.png" width="28"> Gym 5 · Koga · `koga-signed-images`
+## <img src="../assets/badges/5.svg" width="28"> Gym 5 · Koga · `koga-signed-images`
 
 **Rule.** Every image must carry a valid [cosign](https://github.com/sigstore/cosign) signature from the league's key.
 This one is an `ImageValidatingPolicy`: Kyverno fetches the signature from the registry at admission time and verifies it.
@@ -127,7 +127,7 @@ produce a policy set with Koga missing. (Why that matters is in the field notes 
 Actions OIDC identity and recorded in the public Rekor log. Rewriting Koga to verify that identity (`keyless.identities`)
 is a great exercise once the images live in GHCR.
 
-## <img src="../assets/badges/6.png" width="28"> Gym 6 · Sabrina · `sabrina-health-probes`
+## <img src="../assets/badges/6.svg" width="28"> Gym 6 · Sabrina · `sabrina-health-probes`
 
 **Rule.** Every container has a `livenessProbe` and a `readinessProbe`.
 
@@ -136,7 +136,7 @@ Liveness restarts a container that's wedged. That's availability, which is the A
 `/healthz` and `/readyz`, and drain in-flight requests on SIGTERM ([`internal/httpx`](../internal/httpx/httpx.go)), so
 rolling updates in prod (2 replicas) drop no requests.
 
-## <img src="../assets/badges/7.png" width="28"> Gym 7 · Blaine · `blaine-no-host-access`
+## <img src="../assets/badges/7.svg" width="28"> Gym 7 · Blaine · `blaine-no-host-access`
 
 **Rule.** No `privileged` containers, no `hostNetwork`, `hostPID` or `hostIPC`, and no `hostPath` volumes.
 
@@ -144,7 +144,7 @@ rolling updates in prod (2 replicas) drop no requests.
 PID 1 on the node. A `hostPath: /` mount is the node's filesystem. `chroot /host` and you *are* the node, with its
 kubelet credentials. See Koffing.
 
-## <img src="../assets/badges/8.png" width="28"> Gym 8 · Giovanni · `giovanni-least-privilege`
+## <img src="../assets/badges/8.svg" width="28"> Gym 8 · Giovanni · `giovanni-least-privilege`
 
 **Rule.** Pods don't use the namespace's `default` ServiceAccount, and either set `automountServiceAccountToken: false`
 or carry the annotation `poke-league.dev/needs-api-token: "true"`.

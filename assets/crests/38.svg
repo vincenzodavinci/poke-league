@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="ninetales crest">
+<defs>
+<radialGradient id="b" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#ffc08a"/><stop offset=".55" stop-color="#f08030"/><stop offset="1" stop-color="#9c531f"/></radialGradient>
+<linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffc08a"/><stop offset="1" stop-color="#9c531f"/></linearGradient>
+<radialGradient id="g" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#ffc08a"/><stop offset="1" stop-color="#f08030"/></radialGradient>
+</defs>
+<path d="M27.9 127.9 A100.1 100.1 0 0 1 82.6 38.7" fill="none" stroke="#f08030" stroke-width="4.0" stroke-linecap="round" opacity="0.75"/>
+<path d="M24.2 101.4 A107.1 107.1 0 0 1 104.6 23.4" fill="none" stroke="#f08030" stroke-width="3.3" stroke-linecap="round" opacity="0.60"/>
+<path d="M69.2 152.8 Q50.6 150.4 33.1 117.4 Q59.9 112.1 68.8 103.9 Q57.5 89.1 66.7 51.3 Q91.1 68.6 103.2 69.2 Q105.6 50.6 139.2 27.7 Q143.9 59.9 152.1 68.8 Q166.9 57.5 206.4 65.4 Q187.4 91.1 186.8 103.2 Q205.4 105.6 226.4 139.0 Q196.1 143.9 187.2 152.1 Q198.5 166.9 187.1 201.9 Q164.9 187.4 152.8 186.8 Q150.4 205.4 117.7 219.9 Q112.1 196.1 103.9 187.2 Q89.1 198.5 54.8 186.5 Q68.6 164.9 69.2 152.8 Z" fill="url(#s)" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="128" cy="128" r="63.9" fill="url(#b)" stroke="#0b1024" stroke-width="3"/>
+<circle cx="128" cy="128" r="55.9" fill="none" stroke="#9c531f" stroke-width="2.5" stroke-dasharray="3 4" opacity=".7"/>
+<circle cx="128" cy="128" r="48.9" fill="none" stroke="#9c531f" stroke-width="2.5" stroke-dasharray="18 6" opacity=".7"/>
+<circle cx="128" cy="128" r="34.4" fill="none" stroke="#ffffff" stroke-width="2" opacity=".75"/>
+<polygon points="104.6,137.9 111.4,108.8 141.1,106.3 152.7,133.8 130.2,153.3" fill="url(#g)" stroke="#0b1024" stroke-width="2.5" stroke-linejoin="round"/>
+<line x1="128" y1="128" x2="104.6" y2="137.9" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="111.4" y2="108.8" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="141.1" y2="106.3" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<g transform="translate(128 128) scale(0.576)"><path d="M0 -30 C10 -14 22 -8 18 10 C15 24 6 30 0 30 C-6 30 -15 24 -18 10 C-20 0 -12 -6 -8 -16 C-4 -6 0 -4 2 -10 C4 -16 2 -22 0 -30 Z" fill="#ffffff" fill-rule="evenodd" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/></g>
+<ellipse cx="105.6" cy="99.3" rx="20.4" ry="10.2" fill="#ffffff" opacity=".35" transform="rotate(-30 105.6 99.3)"/>
+</svg>

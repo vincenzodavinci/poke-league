@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="rattata crest">
+<defs>
+<radialGradient id="b" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#d8d8b0"/><stop offset=".55" stop-color="#a8a878"/><stop offset="1" stop-color="#6d6d4e"/></radialGradient>
+<linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d8d8b0"/><stop offset="1" stop-color="#6d6d4e"/></linearGradient>
+<radialGradient id="g" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#d8d8b0"/><stop offset="1" stop-color="#a8a878"/></radialGradient>
+</defs>
+<path d="M212.4 110.0 L189.6 143.0 L194.6 182.8 L154.6 185.5 L126.8 207.0 L99.7 184.7 L63.8 177.7 L66.0 141.2 L49.3 108.8 L79.0 87.8 L91.9 50.1 L128.9 64.6 L165.7 52.6 L178.1 89.2 Z" fill="url(#s)" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="128" cy="128" r="56.9" fill="url(#b)" stroke="#0b1024" stroke-width="3"/>
+<circle cx="128" cy="128" r="48.9" fill="none" stroke="#6d6d4e" stroke-width="2.5" stroke-dasharray="0" opacity=".7"/>
+<polygon points="147.8,123.8 121.7,147.3 114.4,112.9" fill="url(#g)" stroke="#0b1024" stroke-width="2.5" stroke-linejoin="round"/>
+<line x1="128" y1="128" x2="147.8" y2="123.8" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="121.7" y2="147.3" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<g transform="translate(128 128) scale(0.461)"><path d="M0 -30 L7 -7 L30 0 L7 7 L0 30 L-7 7 L-30 0 L-7 -7 Z" fill="#ffffff" fill-rule="evenodd" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/></g>
+<ellipse cx="108.1" cy="102.4" rx="18.2" ry="9.1" fill="#ffffff" opacity=".35" transform="rotate(-30 108.1 102.4)"/>
+</svg>

@@ -24,8 +24,8 @@ function el(tag, attrs = {}, ...children) {
   return node;
 }
 
-const art = (id) => `/sprites/pokemon/${id}.png`;
-const badgeImg = (n) => `/sprites/badges/${n}.png`;
+const art = (id) => `/sprites/pokemon/${id}.svg`;
+const badgeImg = (n) => `/sprites/badges/${n}.svg`;
 const typePill = (t) => el("span", { class: "type", style: { background: `var(--t-${t})` } }, t);
 // "kind-registry:5000/poke-league/dex-api@sha256:4d58ad4e…" -> "dex-api@sha256:4d58ad4e"
 const shortImage = (img) => img.replace(/^.*\//, "").replace(/@sha256:(\w{8})\w+/, "@sha256:$1");
@@ -156,6 +156,16 @@ function renderDex() {
       el("div", { class: "types" }, p.types.map(typePill)))));
 }
 
+// A short, generated entry: facts from the data, no game text.
+function describe(p) {
+  const names = { hp: "HP", attack: "Attack", defense: "Defense", "special-attack": "Sp. Atk", "special-defense": "Sp. Def", speed: "Speed" };
+  const [top] = Object.entries(p.stats).sort((a, b) => b[1] - a[1]);
+  const total = Object.values(p.stats).reduce((a, b) => a + b, 0);
+  const types = p.types.map(title).join("/");
+  return `A ${types}-type Pokémon. Its strongest stat is ${names[top[0]]} (${top[1]}), with a base stat total of ${total}. ` +
+    "Its crest is generated from these numbers.";
+}
+
 function showDetail(p) {
   const labels = { hp: "HP", attack: "Attack", defense: "Defense", "special-attack": "Sp. Atk", "special-defense": "Sp. Def", speed: "Speed" };
   document.getElementById("detail-body").replaceChildren(
@@ -166,7 +176,7 @@ function showDetail(p) {
         el("h2", {}, title(p.name)),
         el("div", { class: "types" }, p.types.map(typePill)),
         el("p", { class: "no" }, `${(p.height / 10).toFixed(1)} m · ${(p.weight / 10).toFixed(1)} kg`)),
-      el("p", { class: "flavor" }, p.flavor),
+      el("p", { class: "flavor" }, describe(p)),
       el("div", { class: "stats" }, Object.entries(labels).flatMap(([k, label]) => [
         el("span", {}, label), el("b", {}, p.stats[k]),
         el("div", { class: "bar" }, el("i", { style: { width: `${Math.min(100, p.stats[k] / 2)}%` } }))]))));

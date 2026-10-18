@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="machop crest">
+<defs>
+<radialGradient id="b" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#f08080"/><stop offset=".55" stop-color="#c03028"/><stop offset="1" stop-color="#7d1f1a"/></radialGradient>
+<linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f08080"/><stop offset="1" stop-color="#7d1f1a"/></linearGradient>
+<radialGradient id="g" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#f08080"/><stop offset="1" stop-color="#c03028"/></radialGradient>
+</defs>
+<path d="M94.6 42.3 L126.4 56.9 L159.6 34.8 L172.5 72.5 L208.0 79.4 L197.8 114.1 L225.1 142.9 L190.4 162.2 L192.7 201.7 L153.8 194.3 L130.2 225.6 L105.1 195.4 L71.5 198.5 L67.2 164.9 L31.4 147.2 L57.7 117.2 L48.0 84.1 L81.1 74.5 Z" fill="url(#s)" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="128" cy="128" r="63.4" fill="url(#b)" stroke="#0b1024" stroke-width="3"/>
+<circle cx="128" cy="128" r="55.4" fill="none" stroke="#7d1f1a" stroke-width="2.5" stroke-dasharray="3 4" opacity=".7"/>
+<circle cx="128" cy="128" r="48.4" fill="none" stroke="#7d1f1a" stroke-width="2.5" stroke-dasharray="10 5" opacity=".7"/>
+<polygon points="120.3,108.3 147.7,120.3 135.7,147.7 108.3,135.7" fill="url(#g)" stroke="#0b1024" stroke-width="2.5" stroke-linejoin="round"/>
+<line x1="128" y1="128" x2="120.3" y2="108.3" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="147.7" y2="120.3" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="135.7" y2="147.7" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<g transform="translate(128 128) scale(0.481)"><path d="M-22 -22 L22 22 M22 -22 L-22 22 M-28 -10 L-10 -28 M10 28 L28 10" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></g>
+<ellipse cx="105.8" cy="99.5" rx="20.3" ry="10.1" fill="#ffffff" opacity=".35" transform="rotate(-30 105.8 99.5)"/>
+</svg>

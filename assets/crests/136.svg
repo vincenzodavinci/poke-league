@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="flareon crest">
+<defs>
+<radialGradient id="b" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#ffc08a"/><stop offset=".55" stop-color="#f08030"/><stop offset="1" stop-color="#9c531f"/></radialGradient>
+<linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffc08a"/><stop offset="1" stop-color="#9c531f"/></linearGradient>
+<radialGradient id="g" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#ffc08a"/><stop offset="1" stop-color="#f08030"/></radialGradient>
+</defs>
+<path d="M105.1 69.8 Q103.6 46.0 127.6 19.6 Q133.8 57.3 140.2 66.6 Q151.8 45.8 185.8 37.3 Q171.1 71.7 171.4 83.0 Q192.5 71.7 219.9 85.7 Q194.7 103.9 188.9 113.6 Q212.7 115.5 231.1 142.4 Q197.1 143.8 187.0 148.8 Q206.0 163.3 208.6 197.3 Q177.6 178.7 166.4 177.4 Q174.5 199.8 157.9 228.5 Q142.3 197.5 133.6 190.3 Q128.3 213.6 99.8 225.3 Q102.5 194.2 99.0 183.4 Q82.0 200.2 45.9 199.7 Q70.8 169.9 73.6 159.0 Q50.3 163.8 21.1 143.8 Q57.2 132.3 65.5 124.6 Q43.2 116.1 29.0 83.2 Q66.1 93.3 77.3 91.4 Q63.1 72.2 73.1 43.3 Q94.7 65.4 105.1 69.8 Z" fill="url(#s)" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="128" cy="128" r="62.6" fill="url(#b)" stroke="#0b1024" stroke-width="3"/>
+<circle cx="128" cy="128" r="54.6" fill="none" stroke="#9c531f" stroke-width="2.5" stroke-dasharray="18 6" opacity=".7"/>
+<circle cx="128" cy="128" r="47.6" fill="none" stroke="#9c531f" stroke-width="2.5" stroke-dasharray="0" opacity=".7"/>
+<circle cx="128" cy="128" r="35.6" fill="none" stroke="#ffffff" stroke-width="2" opacity=".75"/>
+<polygon points="118.2,103.2 144.6,107.2 154.3,131.9 137.8,152.8 111.4,148.8 101.7,124.1" fill="url(#g)" stroke="#0b1024" stroke-width="2.5" stroke-linejoin="round"/>
+<line x1="128" y1="128" x2="118.2" y2="103.2" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="144.6" y2="107.2" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="154.3" y2="131.9" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="137.8" y2="152.8" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<g transform="translate(128 128) scale(0.605)"><path d="M0 -30 C10 -14 22 -8 18 10 C15 24 6 30 0 30 C-6 30 -15 24 -18 10 C-20 0 -12 -6 -8 -16 C-4 -6 0 -4 2 -10 C4 -16 2 -22 0 -30 Z" fill="#ffffff" fill-rule="evenodd" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/></g>
+<ellipse cx="106.1" cy="99.8" rx="20.0" ry="10.0" fill="#ffffff" opacity=".35" transform="rotate(-30 106.1 99.8)"/>
+</svg>

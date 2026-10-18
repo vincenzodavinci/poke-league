@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="krabby crest">
+<defs>
+<radialGradient id="b" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#b0c8ff"/><stop offset=".55" stop-color="#6890f0"/><stop offset="1" stop-color="#445e9c"/></radialGradient>
+<linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b0c8ff"/><stop offset="1" stop-color="#445e9c"/></linearGradient>
+<radialGradient id="g" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#b0c8ff"/><stop offset="1" stop-color="#6890f0"/></radialGradient>
+</defs>
+<path d="M184.7 123.1 C210.0 128.6 201.9 163.5 176.7 157.3 C193.9 176.7 166.9 200.1 150.2 180.4 C152.7 206.2 117.1 209.2 115.2 183.4 C102.1 205.8 71.4 187.3 85.0 165.3 C61.3 175.7 47.4 142.7 71.3 132.9 C46.0 127.4 54.1 92.5 79.3 98.7 C62.1 79.3 89.1 55.9 105.8 75.6 C103.3 49.8 138.9 46.8 140.8 72.6 C153.9 50.2 184.6 68.7 171.0 90.7 C194.7 80.3 208.6 113.3 184.7 123.1 Z" fill="url(#s)" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="128" cy="128" r="56.9" fill="url(#b)" stroke="#0b1024" stroke-width="3"/>
+<circle cx="128" cy="128" r="48.9" fill="none" stroke="#445e9c" stroke-width="2.5" stroke-dasharray="10 5" opacity=".7"/>
+<circle cx="128" cy="128" r="41.9" fill="none" stroke="#445e9c" stroke-width="2.5" stroke-dasharray="10 5" opacity=".7"/>
+<circle cx="128" cy="128" r="34.9" fill="none" stroke="#445e9c" stroke-width="2.5" stroke-dasharray="18 6" opacity=".7"/>
+<polygon points="148.2,126.2 119.4,146.4 116.4,111.4" fill="url(#g)" stroke="#0b1024" stroke-width="2.5" stroke-linejoin="round"/>
+<line x1="128" y1="128" x2="148.2" y2="126.2" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="119.4" y2="146.4" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<g transform="translate(128 128) scale(0.461)"><path d="M-30 4 C-20 -8 -10 -8 0 4 C10 16 20 16 30 4 M-30 18 C-20 6 -10 6 0 18 C10 30 20 30 30 18 M-30 -10 C-20 -22 -10 -22 0 -10 C10 2 20 2 30 -10" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></g>
+<ellipse cx="108.1" cy="102.4" rx="18.2" ry="9.1" fill="#ffffff" opacity=".35" transform="rotate(-30 108.1 102.4)"/>
+</svg>

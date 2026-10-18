@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="venusaur crest">
+<defs>
+<radialGradient id="b" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#bfe8a0"/><stop offset=".55" stop-color="#78c850"/><stop offset="1" stop-color="#4e8234"/></radialGradient>
+<linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e0a0e0"/><stop offset="1" stop-color="#682a68"/></linearGradient>
+<radialGradient id="g" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#e0a0e0"/><stop offset="1" stop-color="#a040a0"/></radialGradient>
+</defs>
+<path d="M26.5 113.2 A102.6 102.6 0 0 1 95.2 30.8" fill="none" stroke="#a040a0" stroke-width="4.0" stroke-linecap="round" opacity="0.75"/>
+<path d="M65.1 144.4 C16.9 144.8 22.0 90.7 69.3 100.1 C32.1 69.5 70.8 31.3 100.9 68.9 C92.1 21.5 146.3 17.1 145.2 65.3 C169.0 23.4 213.3 54.9 181.5 91.1 C226.6 74.2 240.4 126.8 192.7 134.1 C238.1 150.2 214.8 199.3 173.7 174.3 C198.1 215.8 148.7 238.4 133.2 192.8 C125.3 240.3 72.9 225.9 90.4 181.0 C53.7 212.3 22.8 167.6 65.1 144.4 Z" fill="url(#s)" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="128" cy="128" r="65.0" fill="url(#b)" stroke="#0b1024" stroke-width="3"/>
+<circle cx="128" cy="128" r="57.0" fill="none" stroke="#4e8234" stroke-width="2.5" stroke-dasharray="10 5" opacity=".7"/>
+<circle cx="128" cy="128" r="50.0" fill="none" stroke="#4e8234" stroke-width="2.5" stroke-dasharray="10 5" opacity=".7"/>
+<circle cx="128" cy="128" r="36.1" fill="none" stroke="#ffffff" stroke-width="2" opacity=".75"/>
+<polygon points="101.8,134.8 109.0,108.7 135.2,101.9 154.2,121.2 147.0,147.3 120.8,154.1" fill="url(#g)" stroke="#0b1024" stroke-width="2.5" stroke-linejoin="round"/>
+<line x1="128" y1="128" x2="101.8" y2="134.8" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="109.0" y2="108.7" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="135.2" y2="101.9" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="154.2" y2="121.2" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<g transform="translate(128 128) scale(0.616)"><path d="M0 30 C-26 10 -24 -18 0 -30 C24 -18 26 10 0 30 Z M0 30 L0 -22" fill="#ffffff" fill-rule="evenodd" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/></g>
+<ellipse cx="105.2" cy="98.8" rx="20.8" ry="10.4" fill="#ffffff" opacity=".35" transform="rotate(-30 105.2 98.8)"/>
+</svg>

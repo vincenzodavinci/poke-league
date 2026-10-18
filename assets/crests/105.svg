@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="marowak crest">
+<defs>
+<radialGradient id="b" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#f8e8b0"/><stop offset=".55" stop-color="#e0c068"/><stop offset="1" stop-color="#927d44"/></radialGradient>
+<linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f8e8b0"/><stop offset="1" stop-color="#927d44"/></linearGradient>
+<radialGradient id="g" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#f8e8b0"/><stop offset="1" stop-color="#e0c068"/></radialGradient>
+</defs>
+<path d="M91.6 185.4 L85.8 181.3 L74.2 196.0 L48.6 162.8 L65.7 155.3 L63.2 148.6 L61.4 141.7 L43.1 145.5 L44.8 103.6 L62.8 108.9 L65.1 102.2 L68.2 95.7 L51.7 86.8 L80.0 55.9 L90.3 71.4 L96.5 67.8 L102.9 64.8 L96.0 47.4 L137.6 41.9 L135.5 60.4 L142.5 61.6 L149.4 63.5 L155.3 45.7 L190.7 68.2 L177.2 81.1 L181.8 86.5 L185.9 92.3 L201.8 82.5 L214.5 122.5 L195.8 123.7 L195.9 130.8 L195.3 137.9 L213.7 140.6 L197.8 179.4 L182.8 168.3 L178.2 173.8 L173.2 178.8 L185.6 192.8 L148.5 212.2 L144.0 194.1 L137.0 195.4 L130.0 196.0 L130.5 214.6 L89.5 205.7 L97.8 188.9 Z" fill="url(#s)" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="128" cy="128" r="61.8" fill="url(#b)" stroke="#0b1024" stroke-width="3"/>
+<circle cx="128" cy="128" r="53.8" fill="none" stroke="#927d44" stroke-width="2.5" stroke-dasharray="18 6" opacity=".7"/>
+<circle cx="128" cy="128" r="46.8" fill="none" stroke="#927d44" stroke-width="2.5" stroke-dasharray="18 6" opacity=".7"/>
+<circle cx="128" cy="128" r="39.8" fill="none" stroke="#927d44" stroke-width="2.5" stroke-dasharray="18 6" opacity=".7"/>
+<polygon points="115.9,147.0 109.0,115.9 140.1,109.0 147.0,140.1" fill="url(#g)" stroke="#0b1024" stroke-width="2.5" stroke-linejoin="round"/>
+<line x1="128" y1="128" x2="115.9" y2="147.0" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="109.0" y2="115.9" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="140.1" y2="109.0" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<g transform="translate(128 128) scale(0.512)"><path d="M-30 14 L-30 22 L30 22 L30 14 Z M-24 6 L-12 -6 L-4 2 L8 -18 L24 6 Z" fill="#ffffff" fill-rule="evenodd" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/></g>
+<ellipse cx="106.4" cy="100.2" rx="19.8" ry="9.9" fill="#ffffff" opacity=".35" transform="rotate(-30 106.4 100.2)"/>
+</svg>

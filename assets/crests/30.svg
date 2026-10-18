@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="nidorina crest">
+<defs>
+<radialGradient id="b" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#e0a0e0"/><stop offset=".55" stop-color="#a040a0"/><stop offset="1" stop-color="#682a68"/></radialGradient>
+<linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e0a0e0"/><stop offset="1" stop-color="#682a68"/></linearGradient>
+<radialGradient id="g" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#e0a0e0"/><stop offset="1" stop-color="#a040a0"/></radialGradient>
+</defs>
+<path d="M78.0 175.3 Q59.8 187.7 39.2 162.0 T59.2 126.1 Q37.5 122.0 44.7 90.8 T80.7 78.0 Q68.3 59.8 95.2 42.4 T129.9 59.2 Q134.0 37.5 163.6 48.1 T178.0 80.7 Q196.2 68.3 212.4 95.7 T196.8 129.9 Q218.5 134.0 211.3 165.2 T175.3 178.0 Q187.7 196.2 158.9 208.6 T126.1 196.8 Q122.0 218.5 90.8 211.4 T78.0 175.3 Z" fill="url(#s)" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="128" cy="128" r="63.4" fill="url(#b)" stroke="#0b1024" stroke-width="3"/>
+<circle cx="128" cy="128" r="55.4" fill="none" stroke="#682a68" stroke-width="2.5" stroke-dasharray="3 4" opacity=".7"/>
+<circle cx="128" cy="128" r="48.4" fill="none" stroke="#682a68" stroke-width="2.5" stroke-dasharray="10 5" opacity=".7"/>
+<polygon points="111.3,143.8 112.2,111.3 144.7,112.2 143.8,144.7" fill="url(#g)" stroke="#0b1024" stroke-width="2.5" stroke-linejoin="round"/>
+<line x1="128" y1="128" x2="111.3" y2="143.8" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="112.2" y2="111.3" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="144.7" y2="112.2" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<g transform="translate(128 128) scale(0.523)"><path d="M0 -30 C14 -12 20 0 20 10 A20 20 0 0 1 -20 10 C-20 0 -14 -12 0 -30 Z" fill="#ffffff" fill-rule="evenodd" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/></g>
+<ellipse cx="105.8" cy="99.5" rx="20.3" ry="10.1" fill="#ffffff" opacity=".35" transform="rotate(-30 105.8 99.5)"/>
+</svg>

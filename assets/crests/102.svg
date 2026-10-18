@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="exeggcute crest">
+<defs>
+<radialGradient id="b" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#bfe8a0"/><stop offset=".55" stop-color="#78c850"/><stop offset="1" stop-color="#4e8234"/></radialGradient>
+<linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffb0c8"/><stop offset="1" stop-color="#a13959"/></linearGradient>
+<radialGradient id="g" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#ffb0c8"/><stop offset="1" stop-color="#f85888"/></radialGradient>
+</defs>
+<path d="M179.2 162.6 C199.3 191.7 148.3 221.4 132.9 189.6 C122.7 223.5 67.6 202.1 82.9 170.2 C50.1 183.4 32.4 127.0 66.9 119.1 C36.1 101.6 69.2 52.6 96.9 74.7 C91.3 39.7 150.3 35.0 150.3 70.4 C174.2 44.3 214.6 87.4 186.9 109.5 C222.2 111.9 213.7 170.4 179.2 162.6 Z" fill="url(#s)" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="128" cy="128" r="61.8" fill="url(#b)" stroke="#0b1024" stroke-width="3"/>
+<circle cx="128" cy="128" r="53.8" fill="none" stroke="#4e8234" stroke-width="2.5" stroke-dasharray="3 4" opacity=".7"/>
+<circle cx="128" cy="128" r="46.8" fill="none" stroke="#4e8234" stroke-width="2.5" stroke-dasharray="3 4" opacity=".7"/>
+<polygon points="147.4,141.1 121.5,150.5 104.6,128.8 120.0,106.0 146.5,113.6" fill="url(#g)" stroke="#0b1024" stroke-width="2.5" stroke-linejoin="round"/>
+<line x1="128" y1="128" x2="147.4" y2="141.1" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="121.5" y2="150.5" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="104.6" y2="128.8" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<g transform="translate(128 128) scale(0.533)"><path d="M0 30 C-26 10 -24 -18 0 -30 C24 -18 26 10 0 30 Z M0 30 L0 -22" fill="#ffffff" fill-rule="evenodd" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/></g>
+<ellipse cx="106.4" cy="100.2" rx="19.8" ry="9.9" fill="#ffffff" opacity=".35" transform="rotate(-30 106.4 100.2)"/>
+</svg>

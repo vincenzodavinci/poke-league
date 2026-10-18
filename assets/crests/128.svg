@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="tauros crest">
+<defs>
+<radialGradient id="b" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#d8d8b0"/><stop offset=".55" stop-color="#a8a878"/><stop offset="1" stop-color="#6d6d4e"/></radialGradient>
+<linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d8d8b0"/><stop offset="1" stop-color="#6d6d4e"/></linearGradient>
+<radialGradient id="g" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#d8d8b0"/><stop offset="1" stop-color="#a8a878"/></radialGradient>
+</defs>
+<path d="M166.0 29.5 A105.6 105.6 0 0 1 233.1 117.2" fill="none" stroke="#a8a878" stroke-width="4.0" stroke-linecap="round" opacity="0.75"/>
+<path d="M193.3 36.2 A112.6 112.6 0 0 1 239.4 144.5" fill="none" stroke="#a8a878" stroke-width="3.3" stroke-linecap="round" opacity="0.60"/>
+<path d="M124.7 25.1 L148.4 57.8 L183.7 46.0 L185.7 83.2 L218.5 95.4 L201.0 125.7 L226.9 156.7 L188.4 169.0 L190.3 208.3 L152.8 196.7 L131.3 231.1 L107.6 198.2 L69.1 214.7 L70.3 172.8 L38.1 160.4 L55.0 130.3 L32.1 100.2 L67.6 87.0 L66.2 48.4 L103.2 59.3 Z" fill="url(#s)" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="128" cy="128" r="64.2" fill="url(#b)" stroke="#0b1024" stroke-width="3"/>
+<circle cx="128" cy="128" r="56.2" fill="none" stroke="#6d6d4e" stroke-width="2.5" stroke-dasharray="18 6" opacity=".7"/>
+<circle cx="128" cy="128" r="49.2" fill="none" stroke="#6d6d4e" stroke-width="2.5" stroke-dasharray="3 4" opacity=".7"/>
+<circle cx="128" cy="128" r="42.2" fill="none" stroke="#6d6d4e" stroke-width="2.5" stroke-dasharray="18 6" opacity=".7"/>
+<polygon points="127.3,106.4 149.6,127.3 128.7,149.6 106.4,128.7" fill="url(#g)" stroke="#0b1024" stroke-width="2.5" stroke-linejoin="round"/>
+<line x1="128" y1="128" x2="127.3" y2="106.4" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="149.6" y2="127.3" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="128.7" y2="149.6" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<g transform="translate(128 128) scale(0.492)"><path d="M0 -30 L7 -7 L30 0 L7 7 L0 30 L-7 7 L-30 0 L-7 -7 Z" fill="#ffffff" fill-rule="evenodd" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/></g>
+<ellipse cx="105.5" cy="99.1" rx="20.5" ry="10.3" fill="#ffffff" opacity=".35" transform="rotate(-30 105.5 99.1)"/>
+</svg>

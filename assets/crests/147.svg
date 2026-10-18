@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="dratini crest">
+<defs>
+<radialGradient id="b" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#b8a0ff"/><stop offset=".55" stop-color="#7038f8"/><stop offset="1" stop-color="#4924a1"/></radialGradient>
+<linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b8a0ff"/><stop offset="1" stop-color="#4924a1"/></linearGradient>
+<radialGradient id="g" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#b8a0ff"/><stop offset="1" stop-color="#7038f8"/></radialGradient>
+</defs>
+<path d="M41.8 113.4 L72.4 93.1 L76.0 54.8 L113.4 64.1 L142.9 39.8 L162.9 72.4 L196.7 79.2 L191.9 113.4 L211.5 142.1 L183.6 162.9 L177.7 198.0 L142.6 191.9 L113.4 214.3 L93.1 183.6 L56.6 178.7 L64.1 142.6 Z" fill="url(#s)" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="128" cy="128" r="58.7" fill="url(#b)" stroke="#0b1024" stroke-width="3"/>
+<circle cx="128" cy="128" r="50.7" fill="none" stroke="#4924a1" stroke-width="2.5" stroke-dasharray="10 5" opacity=".7"/>
+<circle cx="128" cy="128" r="43.7" fill="none" stroke="#4924a1" stroke-width="2.5" stroke-dasharray="0" opacity=".7"/>
+<polygon points="105.8,124.2 131.8,105.8 150.2,131.8 124.2,150.2" fill="url(#g)" stroke="#0b1024" stroke-width="2.5" stroke-linejoin="round"/>
+<line x1="128" y1="128" x2="105.8" y2="124.2" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="131.8" y2="105.8" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="150.2" y2="131.8" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<g transform="translate(128 128) scale(0.512)"><path d="M-24 -24 C-10 -4 -10 14 -20 28 C4 18 14 -2 24 -28 C10 -14 -6 -14 -24 -24 Z" fill="#ffffff" fill-rule="evenodd" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/></g>
+<ellipse cx="107.5" cy="101.6" rx="18.8" ry="9.4" fill="#ffffff" opacity=".35" transform="rotate(-30 107.5 101.6)"/>
+</svg>

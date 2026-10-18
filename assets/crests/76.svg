@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="golem crest">
+<defs>
+<radialGradient id="b" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#e8d890"/><stop offset=".55" stop-color="#b8a038"/><stop offset="1" stop-color="#786824"/></radialGradient>
+<linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f8e8b0"/><stop offset="1" stop-color="#927d44"/></linearGradient>
+<radialGradient id="g" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#f8e8b0"/><stop offset="1" stop-color="#e0c068"/></radialGradient>
+</defs>
+<path d="M76.7 179.8 L72.4 175.2 L54.2 190.7 L35.7 157.0 L58.4 149.9 L56.8 143.8 L55.7 137.7 L32.1 140.8 L34.7 102.5 L57.6 108.8 L59.5 102.8 L61.9 97.0 L40.4 86.9 L63.3 56.1 L79.2 73.8 L84.0 69.8 L89.2 66.3 L76.5 46.1 L112.4 32.5 L116.3 56.0 L122.5 55.3 L128.7 55.1 L128.9 31.2 L166.5 39.2 L157.1 61.1 L162.7 63.8 L168.0 67.0 L181.1 47.1 L208.4 74.2 L188.6 87.4 L191.9 92.8 L194.6 98.4 L216.4 88.7 L224.8 126.2 L200.9 126.6 L200.8 132.9 L200.1 139.1 L223.6 142.7 L210.4 178.8 L190.1 166.3 L186.6 171.5 L182.7 176.3 L200.5 192.1 L169.8 215.3 L159.5 193.8 L153.8 196.2 L147.9 198.2 L154.4 221.1 L116.0 224.0 L119.0 200.4 L112.8 199.3 L106.8 197.8 L99.8 220.6 L66.0 202.3 L81.3 184.0 Z" fill="url(#s)" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="128" cy="128" r="65.0" fill="url(#b)" stroke="#0b1024" stroke-width="3"/>
+<circle cx="128" cy="128" r="57.0" fill="none" stroke="#786824" stroke-width="2.5" stroke-dasharray="10 5" opacity=".7"/>
+<circle cx="128" cy="128" r="50.0" fill="none" stroke="#786824" stroke-width="2.5" stroke-dasharray="18 6" opacity=".7"/>
+<circle cx="128" cy="128" r="43.0" fill="none" stroke="#786824" stroke-width="2.5" stroke-dasharray="18 6" opacity=".7"/>
+<polygon points="111.8,144.3 111.7,111.8 144.2,111.7 144.3,144.2" fill="url(#g)" stroke="#0b1024" stroke-width="2.5" stroke-linejoin="round"/>
+<line x1="128" y1="128" x2="111.8" y2="144.3" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="111.7" y2="111.8" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="144.2" y2="111.7" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<g transform="translate(128 128) scale(0.523)"><path d="M-26 18 L-6 -22 L6 -4 L14 -14 L28 18 Z" fill="#ffffff" fill-rule="evenodd" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/></g>
+<ellipse cx="105.2" cy="98.8" rx="20.8" ry="10.4" fill="#ffffff" opacity=".35" transform="rotate(-30 105.2 98.8)"/>
+</svg>

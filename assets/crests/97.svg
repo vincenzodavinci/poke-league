@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="hypno crest">
+<defs>
+<radialGradient id="b" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#ffb0c8"/><stop offset=".55" stop-color="#f85888"/><stop offset="1" stop-color="#a13959"/></radialGradient>
+<linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffb0c8"/><stop offset="1" stop-color="#a13959"/></linearGradient>
+<radialGradient id="g" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#ffb0c8"/><stop offset="1" stop-color="#f85888"/></radialGradient>
+</defs>
+<path d="M73.9 90.5 C45.3 55.0 95.6 22.6 116.2 63.3 C121.1 17.9 179.7 30.6 165.5 73.9 C201.0 45.3 233.4 95.6 192.7 116.2 C238.1 121.1 225.4 179.7 182.1 165.5 C210.7 201.0 160.4 233.4 139.8 192.7 C134.9 238.1 76.3 225.4 90.5 182.1 C55.0 210.7 22.6 160.4 63.3 139.8 C17.9 134.9 30.6 76.3 73.9 90.5 Z" fill="url(#s)" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="128" cy="128" r="65.8" fill="url(#b)" stroke="#0b1024" stroke-width="3"/>
+<circle cx="128" cy="128" r="57.8" fill="none" stroke="#a13959" stroke-width="2.5" stroke-dasharray="0" opacity=".7"/>
+<circle cx="128" cy="128" r="50.8" fill="none" stroke="#a13959" stroke-width="2.5" stroke-dasharray="10 5" opacity=".7"/>
+<circle cx="128" cy="128" r="33.6" fill="none" stroke="#ffffff" stroke-width="2" opacity=".75"/>
+<polygon points="107.7,114.0 135.1,104.4 152.6,127.4 136.1,151.2 108.4,142.9" fill="url(#g)" stroke="#0b1024" stroke-width="2.5" stroke-linejoin="round"/>
+<line x1="128" y1="128" x2="107.7" y2="114.0" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="135.1" y2="104.4" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="152.6" y2="127.4" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<g transform="translate(128 128) scale(0.560)"><path d="M-30 0 C-16 -18 16 -18 30 0 C16 18 -16 18 -30 0 Z M0 -9 A9 9 0 1 1 0 9 A9 9 0 1 1 0 -9" fill="#ffffff" fill-rule="evenodd" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/></g>
+<ellipse cx="105.0" cy="98.4" rx="21.1" ry="10.5" fill="#ffffff" opacity=".35" transform="rotate(-30 105.0 98.4)"/>
+</svg>

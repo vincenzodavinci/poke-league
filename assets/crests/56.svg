@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="mankey crest">
+<defs>
+<radialGradient id="b" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#f08080"/><stop offset=".55" stop-color="#c03028"/><stop offset="1" stop-color="#7d1f1a"/></radialGradient>
+<linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f08080"/><stop offset="1" stop-color="#7d1f1a"/></linearGradient>
+<radialGradient id="g" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#f08080"/><stop offset="1" stop-color="#c03028"/></radialGradient>
+</defs>
+<path d="M174.7 50.8 L179.7 86.5 L214.5 98.6 L194.3 129.4 L210.6 160.1 L177.9 171.7 L169.9 204.2 L138.1 193.5 L110.3 217.1 L93.7 184.7 L58.0 184.3 L65.2 149.4 L42.7 126.2 L66.2 104.0 L63.9 71.9 L96.1 69.9 L114.0 37.7 L140.9 63.0 Z" fill="url(#s)" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="128" cy="128" r="58.5" fill="url(#b)" stroke="#0b1024" stroke-width="3"/>
+<circle cx="128" cy="128" r="50.5" fill="none" stroke="#7d1f1a" stroke-width="2.5" stroke-dasharray="3 4" opacity=".7"/>
+<polygon points="139.0,109.9 146.1,139.0 117.0,146.1 109.9,117.0" fill="url(#g)" stroke="#0b1024" stroke-width="2.5" stroke-linejoin="round"/>
+<line x1="128" y1="128" x2="139.0" y2="109.9" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="146.1" y2="139.0" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="117.0" y2="146.1" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<g transform="translate(128 128) scale(0.481)"><path d="M-22 -22 L22 22 M22 -22 L-22 22 M-28 -10 L-10 -28 M10 28 L28 10" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></g>
+<ellipse cx="107.5" cy="101.7" rx="18.7" ry="9.4" fill="#ffffff" opacity=".35" transform="rotate(-30 107.5 101.7)"/>
+</svg>

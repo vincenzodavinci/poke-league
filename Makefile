@@ -34,8 +34,11 @@ help: ## Show this help
 	/^[a-zA-Z_-]+:.*##/{printf "  \033[36m%-14s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 ##@ Develop
-assets: ## Re-download artwork, badges and the Kanto dex from PokeAPI
+assets: ## Re-fetch the Kanto dex facts from PokeAPI, then regenerate the art
 	python3 -I scripts/fetch_assets.py
+
+crests: ## Regenerate the original art (crests, gym sigils, favicon) from data/kanto.json
+	python3 -I scripts/make_crests.py
 
 test: ## Go unit tests + Kyverno policy tests
 	go test ./...
@@ -144,4 +147,4 @@ down: ## Delete the cluster and the local registry
 	docker rm -f kind-registry >/dev/null 2>&1 || true
 	rm -rf $(BUILD)
 
-.PHONY: help assets test policy-test lint demo cluster kyverno images sign policies deploy rocket trivy board board-dev reports challenge down
+.PHONY: help assets crests test policy-test lint demo cluster kyverno images sign policies deploy rocket trivy board board-dev reports challenge down

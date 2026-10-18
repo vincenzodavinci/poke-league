@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="dragonite crest">
+<defs>
+<radialGradient id="b" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#b8a0ff"/><stop offset=".55" stop-color="#7038f8"/><stop offset="1" stop-color="#4924a1"/></radialGradient>
+<linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d8ccff"/><stop offset="1" stop-color="#6d5e9c"/></linearGradient>
+<radialGradient id="g" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#d8ccff"/><stop offset="1" stop-color="#a890f0"/></radialGradient>
+</defs>
+<path d="M43.5 206.8 A115.5 115.5 0 0 1 19.5 88.5" fill="none" stroke="#a890f0" stroke-width="4.0" stroke-linecap="round" opacity="0.75"/>
+<path d="M84.8 224.8 L77.8 187.0 L34.4 189.2 L53.9 150.4 L14.5 128.9 L53.5 106.8 L35.0 69.3 L76.8 69.9 L81.7 28.8 L116.3 51.4 L142.9 17.9 L159.6 57.3 L197.5 46.5 L192.8 85.6 L228.4 97.6 L205.5 127.4 L233.6 158.1 L193.5 169.3 L199.2 208.9 L160.8 198.2 L143.9 232.5 L117.6 204.8 Z" fill="url(#s)" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="128" cy="128" r="66.8" fill="url(#b)" stroke="#0b1024" stroke-width="3"/>
+<circle cx="128" cy="128" r="58.8" fill="none" stroke="#4924a1" stroke-width="2.5" stroke-dasharray="18 6" opacity=".7"/>
+<circle cx="128" cy="128" r="51.8" fill="none" stroke="#4924a1" stroke-width="2.5" stroke-dasharray="10 5" opacity=".7"/>
+<circle cx="128" cy="128" r="44.8" fill="none" stroke="#4924a1" stroke-width="2.5" stroke-dasharray="18 6" opacity=".7"/>
+<circle cx="128" cy="128" r="36.1" fill="none" stroke="#ffffff" stroke-width="2" opacity=".75"/>
+<polygon points="116.9,152.7 101.1,130.8 112.1,106.1 139.1,103.3 154.9,125.2 143.9,149.9" fill="url(#g)" stroke="#0b1024" stroke-width="2.5" stroke-linejoin="round"/>
+<line x1="128" y1="128" x2="116.9" y2="152.7" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="101.1" y2="130.8" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="112.1" y2="106.1" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="139.1" y2="103.3" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<g transform="translate(128 128) scale(0.616)"><path d="M-24 -24 C-10 -4 -10 14 -20 28 C4 18 14 -2 24 -28 C10 -14 -6 -14 -24 -24 Z" fill="#ffffff" fill-rule="evenodd" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/></g>
+<ellipse cx="104.6" cy="97.9" rx="21.4" ry="10.7" fill="#ffffff" opacity=".35" transform="rotate(-30 104.6 97.9)"/>
+</svg>

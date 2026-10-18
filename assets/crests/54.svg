@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="psyduck crest">
+<defs>
+<radialGradient id="b" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#b0c8ff"/><stop offset=".55" stop-color="#6890f0"/><stop offset="1" stop-color="#445e9c"/></radialGradient>
+<linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b0c8ff"/><stop offset="1" stop-color="#445e9c"/></linearGradient>
+<radialGradient id="g" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#b0c8ff"/><stop offset="1" stop-color="#6890f0"/></radialGradient>
+</defs>
+<path d="M173.3 167.6 C178.9 186.3 134.9 205.1 125.3 188.1 C114.1 204.2 72.0 181.5 79.3 163.3 C59.8 164.7 51.3 117.6 70.0 112.0 C56.8 97.5 88.3 61.5 104.4 72.7 C107.4 53.4 155.2 55.5 156.5 75.1 C173.5 65.4 201.6 104.1 187.2 117.3 C205.3 124.6 192.6 170.7 173.3 167.6 Z" fill="url(#s)" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="128" cy="128" r="60.1" fill="url(#b)" stroke="#0b1024" stroke-width="3"/>
+<circle cx="128" cy="128" r="52.1" fill="none" stroke="#445e9c" stroke-width="2.5" stroke-dasharray="0" opacity=".7"/>
+<circle cx="128" cy="128" r="45.1" fill="none" stroke="#445e9c" stroke-width="2.5" stroke-dasharray="0" opacity=".7"/>
+<polygon points="146.0,143.7 118.6,150.0 104.2,125.8 122.7,104.7 148.5,115.7" fill="url(#g)" stroke="#0b1024" stroke-width="2.5" stroke-linejoin="round"/>
+<line x1="128" y1="128" x2="146.0" y2="143.7" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="118.6" y2="150.0" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="104.2" y2="125.8" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<g transform="translate(128 128) scale(0.543)"><path d="M-30 4 C-20 -8 -10 -8 0 4 C10 16 20 16 30 4 M-30 18 C-20 6 -10 6 0 18 C10 30 20 30 30 18 M-30 -10 C-20 -22 -10 -22 0 -10 C10 2 20 2 30 -10" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></g>
+<ellipse cx="107.0" cy="100.9" rx="19.2" ry="9.6" fill="#ffffff" opacity=".35" transform="rotate(-30 107.0 100.9)"/>
+</svg>

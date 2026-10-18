@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="arcanine crest">
+<defs>
+<radialGradient id="b" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#ffc08a"/><stop offset=".55" stop-color="#f08030"/><stop offset="1" stop-color="#9c531f"/></radialGradient>
+<linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffc08a"/><stop offset="1" stop-color="#9c531f"/></linearGradient>
+<radialGradient id="g" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#ffc08a"/><stop offset="1" stop-color="#f08030"/></radialGradient>
+</defs>
+<path d="M155.1 21.2 A110.2 110.2 0 0 1 235.5 103.7" fill="none" stroke="#f08030" stroke-width="4.0" stroke-linecap="round" opacity="0.75"/>
+<path d="M118.0 62.1 Q123.0 40.9 154.8 26.1 Q153.5 58.4 158.6 68.8 Q175.2 54.6 208.1 62.5 Q189.6 86.7 187.5 98.1 Q209.3 96.3 239.0 121.6 Q202.1 130.7 193.7 138.8 Q212.4 150.2 214.3 183.5 Q186.3 173.8 174.8 175.4 Q183.3 195.6 167.8 230.1 Q148.3 199.3 138.0 193.9 Q133.0 215.1 100.6 232.4 Q102.5 197.6 97.4 187.2 Q80.8 201.4 43.1 197.4 Q66.4 169.3 68.5 157.9 Q46.7 159.7 18.8 134.2 Q53.9 125.3 62.3 117.2 Q43.6 105.8 43.0 73.3 Q69.7 82.2 81.2 80.6 Q72.7 60.4 91.5 34.3 Q107.7 56.7 118.0 62.1 Z" fill="url(#s)" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="128" cy="128" r="66.6" fill="url(#b)" stroke="#0b1024" stroke-width="3"/>
+<circle cx="128" cy="128" r="58.6" fill="none" stroke="#9c531f" stroke-width="2.5" stroke-dasharray="18 6" opacity=".7"/>
+<circle cx="128" cy="128" r="51.6" fill="none" stroke="#9c531f" stroke-width="2.5" stroke-dasharray="10 5" opacity=".7"/>
+<polygon points="123.9,101.2 149.1,111.1 153.2,137.9 132.1,154.8 106.9,144.9 102.8,118.1" fill="url(#g)" stroke="#0b1024" stroke-width="2.5" stroke-linejoin="round"/>
+<line x1="128" y1="128" x2="123.9" y2="101.2" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="149.1" y2="111.1" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="153.2" y2="137.9" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<line x1="128" y1="128" x2="132.1" y2="154.8" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>
+<g transform="translate(128 128) scale(0.616)"><path d="M0 -30 C10 -14 22 -8 18 10 C15 24 6 30 0 30 C-6 30 -15 24 -18 10 C-20 0 -12 -6 -8 -16 C-4 -6 0 -4 2 -10 C4 -16 2 -22 0 -30 Z" fill="#ffffff" fill-rule="evenodd" stroke="#0b1024" stroke-width="3" stroke-linejoin="round"/></g>
+<ellipse cx="104.7" cy="98.0" rx="21.3" ry="10.7" fill="#ffffff" opacity=".35" transform="rotate(-30 104.7 98.0)"/>
+</svg>
