@@ -89,7 +89,7 @@ brew install --cask docker-desktop   # Docker Desktop. Prefer something lighter?
 [Docker Desktop](https://docs.docker.com/desktop/setup/install/windows-install/) with WSL integration on, then do
 everything from the **Ubuntu** terminal using the Linux instructions.
 
-✅ **Check:** each of these prints a version number:
+**Check:** each of these prints a version number:
 ```bash
 docker --version && kind --version && kubectl version --client && helm version --short && python3 --version
 ```
@@ -99,7 +99,7 @@ docker --version && kind --version && kubectl version --client && helm version -
 - **Docker Desktop:** open the app and wait until it says *Engine running*.
 - **Colima:** `colima start --cpu 4 --memory 8`
 
-✅ **Check:** `docker info` prints details without an error.
+**Check:** `docker info` prints details without an error.
 
 ### Step 3: Get the code
 
@@ -108,7 +108,7 @@ git clone https://github.com/vincenzodavinci/poke-league.git
 cd poke-league
 ```
 
-✅ **Check:** your terminal prompt now ends in `poke-league`. Run every command below from this folder.
+**Check:** your terminal prompt now ends in `poke-league`. Run every command below from this folder.
 
 ### Step 4: Build the league
 
@@ -119,14 +119,14 @@ make demo
 This takes **3–5 minutes**. It creates a local cluster, installs Kyverno, builds and signs the images, opens the
 gyms, deploys the app and releases Team Rocket.
 
-✅ **Check:** near the end you see `16/16 gyms open`, several `successfully rolled out` lines, and finally
+**Check:** near the end you see `16/16 gyms open`, several `successfully rolled out` lines, and finally
 `League Board: http://localhost:8088`. If something fails, jump to [Troubleshooting](#troubleshooting).
 
 ### Step 5: Open the League Board
 
 Go to **http://localhost:8088**, or run `make board`.
 
-✅ **Check:** six shiny ✦ cards under *Pallet Town* and *Indigo Plateau*, and three failing *Team Rocket* cards. Click
+**Check:** six shiny ✦ cards under *Pallet Town* and *Indigo Plateau*, and three failing *Team Rocket* cards. Click
 the **Gyms** and **Pokédex** tabs.
 
 ### Step 6 (optional): Turn on vulnerability scanning
@@ -135,7 +135,7 @@ the **Gyms** and **Pokédex** tabs.
 make trivy
 ```
 
-✅ **Check:** after ~5 minutes the HP bars fill in. Meowth drops to **0 HP and faints**, thanks to 8 critical CVEs.
+**Check:** after ~5 minutes the HP bars fill in. Meowth drops to **0 HP and faints**, thanks to 8 critical CVEs.
 
 ### Step 7: Play
 
