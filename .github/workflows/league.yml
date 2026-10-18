@@ -110,7 +110,8 @@ jobs:
   lance:
     name: Lance · build, sign, attest
     needs: [lorelei, bruno, agatha]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # main only: pushes, plus manual runs (workflow_dispatch) to re-publish images
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       contents: read
