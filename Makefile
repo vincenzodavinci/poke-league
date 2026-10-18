@@ -33,7 +33,8 @@ IMAGES_FROM := $(GHCR)
 ARBOK_FROM  := $(GHCR)
 POLICY_DEPS :=
 RENDER_ARGS := --trust ci --registry $(GHCR)/ --identity $(CI_IDENTITY)
-ARBOK_GYMS  := erika   # its image is in the local registry, not GHCR (see expect_denied.sh)
+# Arbok's image sits in the local registry, not GHCR, so Erika refuses it first (see expect_denied.sh)
+ARBOK_GYMS  := erika
 else ifeq ($(TRUST),key)
 SUPPLY      := images sign
 IMAGES_FROM := $(REG_IN)
