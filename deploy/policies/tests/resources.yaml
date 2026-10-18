@@ -1,0 +1,112 @@
+# Test trainers. "champion" is what every league workload should look like;
+# the others each break specific gyms on purpose.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: champion
+  namespace: pallet-town
+spec:
+  serviceAccountName: dex-api
+  automountServiceAccountToken: false
+  securityContext: {runAsNonRoot: true, seccompProfile: {type: RuntimeDefault}}
+  containers:
+    - name: app
+      image: kind-registry:5000/poke-league/dex-api@sha256:4d58ad4e21c071ffcfae552c727419d1d78b2874c5b4ecd31838da3b38b2b1f7
+      env:
+        - name: DB_PASSWORD
+          valueFrom: {secretKeyRef: {name: db, key: password}}   # Misty approves
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities: {drop: ["ALL"]}
+      resources: {requests: {cpu: 10m, memory: 32Mi}, limits: {memory: 64Mi}}
+      livenessProbe: {httpGet: {path: /healthz, port: 8080}}
+      readinessProbe: {httpGet: {path: /readyz, port: 8080}}
+---
+# The League Board: needs its API token, and says so.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: board-with-token
+  namespace: pallet-town
+  annotations: {poke-league.dev/needs-api-token: "true"}
+spec:
+  serviceAccountName: league-board
+  containers:
+    - name: app
+      image: kind-registry:5000/poke-league/league-board:v1.2.3
+---
+# Meowth: the copy-pasted Deployment.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: meowth
+  namespace: pallet-town
+spec:
+  containers:
+    - name: web
+      image: nginx:1.27
+      env:
+        - {name: DB_PASSWORD, value: "pikachu-is-mine-123"}
+---
+# Koffing: the forgotten debug pod.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: koffing
+  namespace: pallet-town
+spec:
+  hostPID: true
+  containers:
+    - name: debug
+      image: busybox:latest
+      securityContext: {privileged: true}
+  volumes:
+    - {name: host, hostPath: {path: /}}
+---
+# Sneaky images Erika has to catch.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: latest-tag
+  namespace: pallet-town
+spec:
+  containers:
+    - {name: app, image: "kind-registry:5000/poke-league/dex-api:latest"}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: no-tag
+  namespace: pallet-town
+spec:
+  containers:
+    - {name: app, image: "kind-registry:5000/poke-league/dex-api"}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: lookalike-registry
+  namespace: pallet-town
+spec:
+  containers:
+    - {name: app, image: "kind-registry:5000/poke-league-evil/dex-api:v1"}
+---
+# Brock checks init containers too.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: soft-init
+  namespace: pallet-town
+spec:
+  securityContext: {runAsNonRoot: true, seccompProfile: {type: RuntimeDefault}}
+  initContainers:
+    - name: setup
+      image: kind-registry:5000/poke-league/dex-api@sha256:4d58ad4e21c071ffcfae552c727419d1d78b2874c5b4ecd31838da3b38b2b1f7
+  containers:
+    - name: app
+      image: kind-registry:5000/poke-league/dex-api@sha256:4d58ad4e21c071ffcfae552c727419d1d78b2874c5b4ecd31838da3b38b2b1f7
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities: {drop: ["ALL"]}

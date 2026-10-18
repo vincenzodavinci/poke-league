@@ -1,0 +1,16 @@
+# Pallet Town (dev) and the Team Rocket lab: failures are reported and shown as kubectl warnings.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../gyms
+patches:
+  - target: {group: policies.kyverno.io}
+    patch: |-
+      - op: replace
+        path: /spec/validationActions
+        value: [Audit, Warn]
+      - op: add
+        path: /spec/matchConstraints/namespaceSelector/matchExpressions
+        value:
+          - {key: kubernetes.io/metadata.name, operator: NotIn, values: [indigo-plateau]}

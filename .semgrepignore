@@ -1,0 +1,5 @@
+# Deliberately insecure lab workloads and policy-test fixtures. They exist to
+# FAIL the gyms; scanning them would only prove that they do.
+deploy/rocket/
+deploy/policies/tests/
+.build/

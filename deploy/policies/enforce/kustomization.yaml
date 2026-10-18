@@ -1,0 +1,16 @@
+# Indigo Plateau (prod): a failed gym denies admission.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+nameSuffix: -enforce
+resources:
+  - ../gyms
+patches:
+  - target: {group: policies.kyverno.io}
+    patch: |-
+      - op: replace
+        path: /spec/validationActions
+        value: [Deny]
+      - op: add
+        path: /spec/matchConstraints/namespaceSelector/matchExpressions
+        value:
+          - {key: kubernetes.io/metadata.name, operator: In, values: [indigo-plateau]}

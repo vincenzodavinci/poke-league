@@ -1,0 +1,38 @@
+# Gym 3 · Lt. Surge · Thunder Badge (Electric)
+# Power budget: requests let the scheduler place pods; a memory limit stops one
+# pod from starving the whole node (a cheap denial of service).
+apiVersion: policies.kyverno.io/v1
+kind: ValidatingPolicy
+metadata:
+  name: surge-resource-limits
+  annotations:
+    poke-league.dev/gym: "3"
+    policies.kyverno.io/title: "Lt. Surge - resource requests and limits"
+spec:
+  validationActions: [Audit]          # overlays set Audit+Warn (dev) or Deny (prod)
+  evaluation:
+    background: {enabled: true}       # re-check running pods, not just new ones
+  autogen:
+    podControllers: {controllers: [deployments]}   # reject a bad Deployment up front
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: [v1]
+        operations: [CREATE, UPDATE]
+        resources: [pods]
+    namespaceSelector:
+      matchLabels: {poke-league.dev/league: "true"}
+  variables:
+    - name: containers
+      expression: object.spec.containers + object.spec.?initContainers.orValue([])
+    - name: unbounded
+      expression: >-
+        variables.containers.filter(c, !(
+          c.?resources.?requests[?'cpu'].hasValue() &&
+          c.?resources.?requests[?'memory'].hasValue() &&
+          c.?resources.?limits[?'memory'].hasValue()
+        )).map(c, c.name)
+  validations:
+    - expression: size(variables.unbounded) == 0
+      messageExpression: >-
+        'Lt. Surge: container(s) ' + variables.unbounded.join(', ') + ' need cpu+memory requests and a memory limit.'

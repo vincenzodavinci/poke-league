@@ -1,0 +1,14 @@
+# Keep the supply chain fresh: Go modules, base-image digests and the SHA-pinned actions.
+version: 2
+updates:
+  - package-ecosystem: gomod
+    directory: /
+    schedule: {interval: weekly}
+    groups:
+      kubernetes: {patterns: ["k8s.io/*"]}
+  - package-ecosystem: docker
+    directory: /build
+    schedule: {interval: weekly}
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: {interval: weekly}

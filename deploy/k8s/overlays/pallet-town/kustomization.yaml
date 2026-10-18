@@ -1,0 +1,7 @@
+# Dev. Gyms run in audit mode here: failures show up on the board, nothing is blocked.
+# Reach it with: make board-dev   (port-forward to localhost:8081)
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: pallet-town
+resources:
+  - ../../base

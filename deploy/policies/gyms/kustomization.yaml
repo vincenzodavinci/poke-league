@@ -1,0 +1,13 @@
+# The eight gyms, written once. ../audit and ../enforce stamp out the
+# dev/lab and prod variants, so the rules can never drift apart.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - 01-brock-hardened-pods.yaml
+  - 02-misty-no-plaintext-secrets.yaml
+  - 03-surge-resource-limits.yaml
+  - 04-erika-trusted-images.yaml
+  - 05-koga-signed-images.yaml
+  - 06-sabrina-health-probes.yaml
+  - 07-blaine-no-host-access.yaml
+  - 08-giovanni-least-privilege.yaml

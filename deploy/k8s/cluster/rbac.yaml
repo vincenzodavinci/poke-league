@@ -1,0 +1,47 @@
+# The League Board may READ pods and reports in the league namespaces, and
+# nothing else: no secrets, no writes, no cluster-wide access.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: league-board-reader
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+  - apiGroups: ["wgpolicyk8s.io"]
+    resources: ["policyreports"]
+    verbs: ["get", "list"]
+  - apiGroups: ["aquasecurity.github.io"]
+    resources: ["vulnerabilityreports"]
+    verbs: ["get", "list"]
+---
+# A ClusterRole bound with namespaced RoleBindings grants it only inside those namespaces.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: league-board-reader
+  namespace: pallet-town
+roleRef: {apiGroup: rbac.authorization.k8s.io, kind: ClusterRole, name: league-board-reader}
+subjects:
+  - {kind: ServiceAccount, name: league-board, namespace: pallet-town}
+  - {kind: ServiceAccount, name: league-board, namespace: indigo-plateau}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: league-board-reader
+  namespace: indigo-plateau
+roleRef: {apiGroup: rbac.authorization.k8s.io, kind: ClusterRole, name: league-board-reader}
+subjects:
+  - {kind: ServiceAccount, name: league-board, namespace: pallet-town}
+  - {kind: ServiceAccount, name: league-board, namespace: indigo-plateau}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: league-board-reader
+  namespace: team-rocket
+roleRef: {apiGroup: rbac.authorization.k8s.io, kind: ClusterRole, name: league-board-reader}
+subjects:
+  - {kind: ServiceAccount, name: league-board, namespace: pallet-town}
+  - {kind: ServiceAccount, name: league-board, namespace: indigo-plateau}

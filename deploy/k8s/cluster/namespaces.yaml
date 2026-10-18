@@ -1,0 +1,32 @@
+# The route through Kanto. Every league namespace carries
+# poke-league.dev/league=true, which is what the gym policies match on.
+#
+# Pod Security Admission is a second, built-in line of defense under Kyverno:
+# dev only warns, prod enforces the "restricted" profile.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pallet-town
+  labels:
+    poke-league.dev/league: "true"
+    pod-security.kubernetes.io/warn: restricted
+    pod-security.kubernetes.io/audit: restricted
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: indigo-plateau
+  labels:
+    poke-league.dev/league: "true"
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/warn: restricted
+---
+# Team Rocket's hideout: the CTF lab. Judged by the gyms (audit only) but PSA
+# is relaxed so the deliberately bad workloads can actually run.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: team-rocket
+  labels:
+    poke-league.dev/league: "true"
+    pod-security.kubernetes.io/enforce: privileged

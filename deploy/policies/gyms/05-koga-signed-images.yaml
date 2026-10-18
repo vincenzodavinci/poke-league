@@ -1,0 +1,45 @@
+# Gym 5 · Koga · Soul Badge (Poison)
+# Antidote for poisoned images: every image must carry a cosign signature made
+# with the league's key. `make sign` generates the key pair in .cosign/ and
+# `make policies` swaps the public key in for the placeholder below.
+# A tampered or re-pushed image has no valid signature and is turned away.
+apiVersion: policies.kyverno.io/v1
+kind: ImageValidatingPolicy
+metadata:
+  name: koga-signed-images
+  annotations:
+    poke-league.dev/gym: "5"
+    policies.kyverno.io/title: "Koga - signed images"
+spec:
+  validationActions: [Audit]
+  autogen:
+    podControllers: {controllers: [deployments]}
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: [v1]
+        operations: [CREATE, UPDATE]
+        resources: [pods]
+    namespaceSelector:
+      matchLabels: {poke-league.dev/league: "true"}
+  matchImageReferences:
+    - glob: "*"
+  credentials:
+    allowInsecureRegistry: true        # the local kind registry speaks plain HTTP
+  validationConfigurations:
+    mutateDigest: false
+    verifyDigest: false
+    required: true
+  attestors:
+    - name: league
+      cosign:
+        key:
+          data: |
+            __LEAGUE_COSIGN_PUBLIC_KEY__
+        ctlog:
+          insecureIgnoreTlog: true     # offline lab: no public transparency log
+          insecureIgnoreSCT: true
+  validations:
+    - expression: >-
+        images.containers.map(image, verifyImageSignatures(image, [attestors.league])).all(n, n > 0)
+      message: "Koga: every image must be signed with the league's cosign key."

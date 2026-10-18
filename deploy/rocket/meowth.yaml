@@ -1,0 +1,30 @@
+# Team Rocket · Meowth — "That's right!"
+# The kind of Deployment that ships every day: copied from a blog post.
+# Root, :latest-ish public image, a password in plain text, the default
+# ServiceAccount with its API token mounted, no limits, no probes.
+# Lab: docs/team-rocket.md#meowth — find the token, then fix the manifest
+# until Meowth earns all 8 badges.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: meowth
+  namespace: team-rocket
+  labels: {app.kubernetes.io/name: meowth}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app.kubernetes.io/name: meowth}
+  template:
+    metadata:
+      labels: {app.kubernetes.io/name: meowth}
+      annotations:
+        poke-league.dev/pokemon: "52"
+    spec:
+      containers:
+        - name: web
+          image: nginx:1.27
+          env:
+            - name: DB_PASSWORD
+              value: "pikachu-is-mine-123"
+          ports:
+            - containerPort: 80

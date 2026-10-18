@@ -1,0 +1,62 @@
+# sprite-svc: artwork, badges and items
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: sprite-svc
+automountServiceAccountToken: false
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sprite-svc
+  labels: &labels
+    app.kubernetes.io/name: sprite-svc
+    app.kubernetes.io/part-of: poke-league
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: sprite-svc
+  template:
+    metadata:
+      labels: *labels
+      annotations:
+        poke-league.dev/pokemon: "151"
+    spec:
+      serviceAccountName: sprite-svc
+      automountServiceAccountToken: false
+      securityContext:                 # Brock
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: app
+          image: kind-registry:5000/poke-league/sprite-svc:dev   # rewritten to a digest by `make deploy`
+          ports:
+            - {name: http, containerPort: 8080}
+          securityContext:             # Brock
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:                   # Lt. Surge
+            requests: {cpu: 10m, memory: 32Mi}
+            limits: {memory: 96Mi}
+          livenessProbe:               # Sabrina
+            httpGet: {path: /healthz, port: http}
+          readinessProbe:
+            httpGet: {path: /readyz, port: http}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sprite-svc
+  labels:
+    app.kubernetes.io/name: sprite-svc
+spec:
+  selector:
+    app.kubernetes.io/name: sprite-svc
+  ports:
+    - {name: http, port: 80, targetPort: http}

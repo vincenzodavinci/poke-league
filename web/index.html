@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Poké League</title>
+  <link rel="icon" href="/sprites/items/poke-ball.png">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header class="dex-top">
+    <div class="lens" aria-hidden="true"><span></span></div>
+    <div class="lights" aria-hidden="true"><i class="r"></i><i class="y"></i><i class="g"></i></div>
+    <img class="mascot" src="/sprites/pokemon/137.png" alt="Porygon, the League mascot">
+    <div class="brand">
+      <h1>Poké League</h1>
+      <p>Kubernetes DevSecOps, Kanto style</p>
+    </div>
+    <nav role="tablist">
+      <button role="tab" data-tab="league" aria-selected="true">League</button>
+      <button role="tab" data-tab="gyms" aria-selected="false">Gyms</button>
+      <button role="tab" data-tab="dex" aria-selected="false">Pokédex</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="league" class="tab">
+      <div class="legend">
+        <span><i class="dot earned"></i>badge earned</span>
+        <span><i class="dot failed"></i>gym failed</span>
+        <span><i class="dot unknown"></i>not judged yet</span>
+        <span class="shiny-chip">✦ shiny = 8 badges + no high/critical CVEs</span>
+      </div>
+      <div id="towns"><p class="empty">Loading the league…</p></div>
+    </section>
+
+    <section id="gyms" class="tab" hidden>
+      <p class="intro">Each gym is a Kyverno <code>ValidatingPolicy</code> (Koga's is an <code>ImageValidatingPolicy</code>), written once in CEL and stamped out as an audit and an enforce copy. Workloads in <b>Pallet Town</b> are judged in audit mode; at the <b>Indigo Plateau</b> a failed gym blocks the deploy.</p>
+      <div id="gym-grid" class="grid gyms"></div>
+    </section>
+
+    <section id="dex" class="tab" hidden>
+      <div class="dex-controls">
+        <input id="q" type="search" placeholder="Search Kanto…" maxlength="32" autocomplete="off">
+        <div id="types" class="chips"></div>
+      </div>
+      <div id="dex-grid" class="grid dex"></div>
+    </section>
+  </main>
+
+  <dialog id="detail">
+    <button class="close" id="close" aria-label="Close">×</button>
+    <div id="detail-body"></div>
+  </dialog>
+
+  <footer>
+    Fan-made learning project. Pokémon and all related artwork © Nintendo / Creatures / GAME FREAK / The Pokémon Company.
+  </footer>
+</body>
+</html>

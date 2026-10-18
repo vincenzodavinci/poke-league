@@ -1,0 +1,7 @@
+.git
+.build
+.cosign
+deploy
+docs
+scripts
+*.md

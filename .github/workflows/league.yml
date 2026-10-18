@@ -1,0 +1,184 @@
+# The Pokémon League pipeline.
+#
+#   pallet-town (unit + policy tests)
+#        │
+#   ┌────┴─────┬───────────┐
+#   lorelei    bruno       agatha        the Elite Four: every gate must pass
+#   secrets    SAST        SCA + SBOM
+#   └────┬─────┴───────────┘
+#      lance  build, push to GHCR, keyless cosign signature, SBOM + SLSA provenance
+#        │    (main branch only)
+#     champion  full kind cluster: gyms enforce, Team Rocket is denied, ZAP scans the board
+#
+# Every third-party action is pinned to a full commit SHA (tags can be moved;
+# see the 2025 tj-actions/changed-files compromise). Dependabot keeps them fresh.
+name: league
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read          # each job asks for exactly what it needs on top
+
+concurrency:
+  group: league-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GO_VERSION: "1.27"
+
+jobs:
+  pallet-town:
+    name: Pallet Town · tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with: {persist-credentials: false}
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with: {go-version: "${{ env.GO_VERSION }}"}
+      - run: go vet ./...
+      - run: go test -race ./...
+      - name: Gym policy tests (Kyverno CLI)
+        run: make policy-test
+      - name: Dockerfile lint (hadolint)
+        run: docker run --rm -i hadolint/hadolint:v2.14.0 < build/Dockerfile
+
+  lorelei:
+    name: Lorelei · secret scanning
+    needs: pallet-town
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with: {fetch-depth: 0, persist-credentials: false}   # full history: old commits leak too
+      - uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}   # only needed for org-owned repos
+
+  bruno:
+    name: Bruno · static analysis
+    needs: pallet-town
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with: {persist-credentials: false}
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with: {go-version: "${{ env.GO_VERSION }}"}
+      - name: govulncheck (known-vulnerable code paths in Go deps)
+        run: go run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./...
+      - name: Semgrep (Go, Dockerfile, Kubernetes, GitHub Actions rules)
+        run: >
+          docker run --rm -v "$PWD:/src" -w /src semgrep/semgrep:1.181.0
+          semgrep scan --error --metrics=off
+          --config p/golang --config p/dockerfile --config p/kubernetes --config p/github-actions
+
+  agatha:
+    name: Agatha · dependencies + SBOM
+    needs: pallet-town
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with: {persist-credentials: false}
+      - name: Trivy (vulnerable deps, misconfig, secrets) — fail on HIGH/CRITICAL with a fix
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          scan-type: fs
+          scanners: vuln,misconfig,secret
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+          # insecure on purpose: Team Rocket's lab and the policy-test fixtures
+          skip-dirs: deploy/rocket,deploy/policies/tests
+      - name: Source SBOM (SPDX)
+        uses: anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
+        with:
+          format: spdx-json
+          artifact-name: poke-league-source.spdx.json
+
+  lance:
+    name: Lance · build, sign, attest
+    needs: [lorelei, bruno, agatha]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write        # push to ghcr.io
+      id-token: write        # keyless signing via GitHub's OIDC token
+      attestations: write    # SLSA build provenance
+    strategy:
+      matrix:
+        app: [dex-api, sprite-svc, league-board]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with: {persist-credentials: false}
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+      - uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - id: build
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: build/Dockerfile
+          build-args: APP=${{ matrix.app }}
+          push: true
+          tags: ghcr.io/${{ github.repository }}/${{ matrix.app }}:${{ github.sha }}
+          sbom: true
+          provenance: mode=max
+      - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+      - name: Keyless signature (Fulcio cert + Rekor transparency log)
+        env:
+          IMAGE: ghcr.io/${{ github.repository }}/${{ matrix.app }}@${{ steps.build.outputs.digest }}
+        run: cosign sign --yes "$IMAGE"
+      - name: Image SBOM, attached as a signed attestation
+        env:
+          IMAGE: ghcr.io/${{ github.repository }}/${{ matrix.app }}@${{ steps.build.outputs.digest }}
+        run: |
+          docker run --rm anchore/syft:v1.33.0 "$IMAGE" -o spdx-json > sbom.spdx.json
+          cosign attest --yes --type spdxjson --predicate sbom.spdx.json "$IMAGE"
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-name: ghcr.io/${{ github.repository }}/${{ matrix.app }}
+          subject-digest: ${{ steps.build.outputs.digest }}
+          push-to-registry: true
+
+  champion:
+    name: Champion · end-to-end on kind
+    needs: [lorelei, bruno, agatha]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with: {persist-credentials: false}
+      - name: Build the league (cluster, Kyverno, images, signatures, gyms, app, Team Rocket)
+        run: make demo
+      - name: Every league workload holds all 8 badges
+        run: |
+          for _ in $(seq 1 30); do
+            curl -sf http://localhost:8088/api/league > league.json && \
+            python3 -c "import json,sys; w=[x for x in json.load(open('league.json'))['workloads'] if x['namespace']!='team-rocket']; sys.exit(0 if w and all(x['earned']==8 for x in w) else 1)" && exit 0
+            sleep 5
+          done
+          cat league.json; exit 1
+      - name: Team Rocket can't get into prod
+        run: |
+          for f in deploy/rocket/*.yaml; do
+            [ "$(basename "$f")" = kustomization.yaml ] && continue
+            if sed 's/namespace: team-rocket/namespace: indigo-plateau/' "$f" | \
+               kubectl --context kind-kanto apply --dry-run=server -f - 2>err.txt | grep -q 'deployment.apps.*created'; then
+              echo "::error::$f was admitted to indigo-plateau"; exit 1
+            fi
+            echo "denied as expected: $f"; head -c 400 err.txt; echo
+          done
+      - name: DAST — OWASP ZAP baseline scan of the League Board
+        uses: zaproxy/action-baseline@de8ad967d3548d44ef623df22cf95c3b0baf8b25 # v0.15.0
+        with:
+          target: http://localhost:8088
+          allow_issue_writing: false
+          fail_action: true
+          cmd_options: -a -I

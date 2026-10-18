@@ -1,0 +1,88 @@
+# kyverno test .   (or: make policy-test)
+# Koga (signatures) is exercised end to end in CI, against a real registry.
+apiVersion: cli.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: kanto-gyms
+policies:
+  - ../gyms/01-brock-hardened-pods.yaml
+  - ../gyms/02-misty-no-plaintext-secrets.yaml
+  - ../gyms/03-surge-resource-limits.yaml
+  - ../gyms/04-erika-trusted-images.yaml
+  - ../gyms/06-sabrina-health-probes.yaml
+  - ../gyms/07-blaine-no-host-access.yaml
+  - ../gyms/08-giovanni-least-privilege.yaml
+resources:
+  - resources.yaml
+variables: values.yaml
+results:
+  - policy: brock-hardened-pods
+    isValidatingPolicy: true
+    kind: Pod
+    result: pass
+    resources: [champion]
+  - policy: brock-hardened-pods
+    isValidatingPolicy: true
+    kind: Pod
+    result: fail
+    resources: [meowth, koffing, soft-init, board-with-token]
+  - policy: misty-no-plaintext-secrets
+    isValidatingPolicy: true
+    kind: Pod
+    result: pass
+    resources: [champion, koffing]
+  - policy: misty-no-plaintext-secrets
+    isValidatingPolicy: true
+    kind: Pod
+    result: fail
+    resources: [meowth]
+  - policy: surge-resource-limits
+    isValidatingPolicy: true
+    kind: Pod
+    result: pass
+    resources: [champion]
+  - policy: surge-resource-limits
+    isValidatingPolicy: true
+    kind: Pod
+    result: fail
+    resources: [meowth, koffing, board-with-token]
+  - policy: erika-trusted-images
+    isValidatingPolicy: true
+    kind: Pod
+    result: pass
+    resources: [champion, board-with-token]
+  - policy: erika-trusted-images
+    isValidatingPolicy: true
+    kind: Pod
+    result: fail
+    resources: [meowth, koffing, latest-tag, no-tag, lookalike-registry]
+  - policy: sabrina-health-probes
+    isValidatingPolicy: true
+    kind: Pod
+    result: pass
+    resources: [champion]
+  - policy: sabrina-health-probes
+    isValidatingPolicy: true
+    kind: Pod
+    result: fail
+    resources: [meowth, koffing]
+  - policy: blaine-no-host-access
+    isValidatingPolicy: true
+    kind: Pod
+    result: pass
+    resources: [champion, meowth]
+  - policy: blaine-no-host-access
+    isValidatingPolicy: true
+    kind: Pod
+    result: fail
+    resources: [koffing]
+  - policy: giovanni-least-privilege
+    isValidatingPolicy: true
+    kind: Pod
+    result: pass
+    resources: [champion, board-with-token]
+  - policy: giovanni-least-privilege
+    isValidatingPolicy: true
+    kind: Pod
+    result: fail
+    resources: [meowth, koffing]

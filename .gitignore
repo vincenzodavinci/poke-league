@@ -1,0 +1,6 @@
+# local build state (rendered kustomizations, digests)
+.build/
+# cosign PRIVATE key never leaves your machine; cosign.pub is fine to share
+.cosign/
+*.key
+.DS_Store

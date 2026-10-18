@@ -1,0 +1,67 @@
+# league-board: League Board UI + /api/league
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: league-board
+automountServiceAccountToken: true
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: league-board
+  labels: &labels
+    app.kubernetes.io/name: league-board
+    app.kubernetes.io/part-of: poke-league
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: league-board
+  template:
+    metadata:
+      labels: *labels
+      annotations:
+        poke-league.dev/pokemon: "137"
+        poke-league.dev/needs-api-token: "true"  # reads PolicyReports (see Giovanni)
+    spec:
+      serviceAccountName: league-board
+      automountServiceAccountToken: true
+      securityContext:                 # Brock
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: app
+          image: kind-registry:5000/poke-league/league-board:dev   # rewritten to a digest by `make deploy`
+          ports:
+            - {name: http, containerPort: 8080}
+          env:
+            - {name: LEAGUE_NAMESPACES, value: "pallet-town,indigo-plateau,team-rocket"}
+            - {name: DEX_API_URL, value: "http://dex-api"}
+            - {name: SPRITE_URL, value: "http://sprite-svc"}
+          securityContext:             # Brock
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:                   # Lt. Surge
+            requests: {cpu: 10m, memory: 32Mi}
+            limits: {memory: 96Mi}
+          livenessProbe:               # Sabrina
+            httpGet: {path: /healthz, port: http}
+          readinessProbe:
+            httpGet: {path: /readyz, port: http}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: league-board
+  labels:
+    app.kubernetes.io/name: league-board
+spec:
+  selector:
+    app.kubernetes.io/name: league-board
+  ports:
+    - {name: http, port: 80, targetPort: http}

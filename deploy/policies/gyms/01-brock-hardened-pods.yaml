@@ -1,0 +1,43 @@
+# Gym 1 · Brock · Boulder Badge (Rock)
+# Rock-solid pods: can't run as root, can't gain privileges, can't write to
+# their own filesystem, and keep no Linux capabilities.
+apiVersion: policies.kyverno.io/v1
+kind: ValidatingPolicy
+metadata:
+  name: brock-hardened-pods
+  annotations:
+    poke-league.dev/gym: "1"
+    policies.kyverno.io/title: "Brock - hardened pods"
+spec:
+  validationActions: [Audit]          # overlays set Audit+Warn (dev) or Deny (prod)
+  evaluation:
+    background: {enabled: true}       # re-check running pods, not just new ones
+  autogen:
+    podControllers: {controllers: [deployments]}   # reject a bad Deployment up front
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: [v1]
+        operations: [CREATE, UPDATE]
+        resources: [pods]
+    namespaceSelector:
+      matchLabels: {poke-league.dev/league: "true"}
+  variables:
+    - name: containers
+      expression: object.spec.containers + object.spec.?initContainers.orValue([])
+    - name: soft
+      expression: >-
+        variables.containers.filter(c, !(
+          c.?securityContext.?allowPrivilegeEscalation.orValue(true) == false &&
+          c.?securityContext.?readOnlyRootFilesystem.orValue(false) == true &&
+          c.?securityContext.?capabilities.?drop.orValue([]).exists(d, d == 'ALL')
+        )).map(c, c.name)
+  validations:
+    - expression: >-
+        object.spec.?securityContext.?runAsNonRoot.orValue(false) == true &&
+        object.spec.?securityContext.?seccompProfile.?type.orValue('') == 'RuntimeDefault'
+      message: "Brock: the pod must set securityContext.runAsNonRoot=true and seccompProfile.type=RuntimeDefault."
+    - expression: size(variables.soft) == 0
+      messageExpression: >-
+        'Brock: container(s) ' + variables.soft.join(', ') + ' need allowPrivilegeEscalation=false,
+        readOnlyRootFilesystem=true and capabilities.drop=[ALL].'

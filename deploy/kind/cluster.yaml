@@ -1,0 +1,18 @@
+# Kanto: a single-node kind cluster wired to a local registry (kind-registry:5000).
+# Pulls of kind-registry:5000/* go to the registry container on the "kind" docker network,
+# so images, cosign signatures and attestations all live in one place Kyverno can read.
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: kanto
+containerdConfigPatches:
+  - |-
+    [plugins."io.containerd.grpc.v1.cri".registry]
+      config_path = "/etc/containerd/certs.d"
+nodes:
+  - role: control-plane
+    extraPortMappings:
+      # League Board UI -> http://localhost:8088 (NodePort 30080).
+      # 8088 rather than 8080, which local dev servers love to claim.
+      - containerPort: 30080
+        hostPort: 8088
+        protocol: TCP

@@ -1,0 +1,62 @@
+# dex-api: Pokédex JSON API
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dex-api
+automountServiceAccountToken: false
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dex-api
+  labels: &labels
+    app.kubernetes.io/name: dex-api
+    app.kubernetes.io/part-of: poke-league
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: dex-api
+  template:
+    metadata:
+      labels: *labels
+      annotations:
+        poke-league.dev/pokemon: "81"
+    spec:
+      serviceAccountName: dex-api
+      automountServiceAccountToken: false
+      securityContext:                 # Brock
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: app
+          image: kind-registry:5000/poke-league/dex-api:dev   # rewritten to a digest by `make deploy`
+          ports:
+            - {name: http, containerPort: 8080}
+          securityContext:             # Brock
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:                   # Lt. Surge
+            requests: {cpu: 10m, memory: 32Mi}
+            limits: {memory: 96Mi}
+          livenessProbe:               # Sabrina
+            httpGet: {path: /healthz, port: http}
+          readinessProbe:
+            httpGet: {path: /readyz, port: http}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dex-api
+  labels:
+    app.kubernetes.io/name: dex-api
+spec:
+  selector:
+    app.kubernetes.io/name: dex-api
+  ports:
+    - {name: http, port: 80, targetPort: http}

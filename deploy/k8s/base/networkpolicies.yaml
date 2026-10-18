@@ -1,0 +1,60 @@
+# Zero-trust networking: deny everything, then allow exactly the paths the
+# app needs.   browser -> league-board -> {dex-api, sprite-svc}
+#                          league-board -> kube-apiserver
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny
+spec:
+  podSelector: {}
+  policyTypes: [Ingress, Egress]
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-dns
+spec:
+  podSelector: {}
+  policyTypes: [Egress]
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels: {kubernetes.io/metadata.name: kube-system}
+          podSelector:
+            matchLabels: {k8s-app: kube-dns}
+      ports:
+        - {protocol: UDP, port: 53}
+        - {protocol: TCP, port: 53}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: league-board
+spec:
+  podSelector:
+    matchLabels: {app.kubernetes.io/name: league-board}
+  policyTypes: [Ingress, Egress]
+  ingress:
+    - ports: [{port: 8080}]            # the UI is the only public entry point
+  egress:
+    - to:
+        - podSelector:
+            matchExpressions:
+              - {key: app.kubernetes.io/name, operator: In, values: [dex-api, sprite-svc]}
+      ports: [{port: 8080}]
+    - ports: [{port: 6443}, {port: 443}]   # kube-apiserver (kind serves it on 6443)
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: backends-from-board-only
+spec:
+  podSelector:
+    matchExpressions:
+      - {key: app.kubernetes.io/name, operator: In, values: [dex-api, sprite-svc]}
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels: {app.kubernetes.io/name: league-board}
+      ports: [{port: 8080}]
