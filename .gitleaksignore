@@ -1,0 +1,4 @@
+# Meowth's lab password (pikachu-is-mine-123) is deliberately fake and deliberately leaked:
+# it is what the Misty gym and the Meowth lab teach you to find. This commit's README
+# typed it into a `kubectl create secret` example; later commits generate a random one.
+16774f6e4802b40fc72b981eac012b2f3b4afa2c:README.md:generic-api-key:348

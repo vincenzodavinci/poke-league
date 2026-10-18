@@ -345,8 +345,10 @@ Clean up with `k -n team-rocket delete rolebinding just-make-it-work` and `k -n 
 
 **a. Move the password into a Secret** (Misty):
 ```bash
-k -n team-rocket create secret generic meowth-db --from-literal=password=pikachu-is-mine-123
+k -n team-rocket create secret generic meowth-db --from-literal=password="$(openssl rand -base64 24)"
 ```
+This generates a fresh random password instead of reusing the leaked one. A leaked password is burned: rotate it,
+don't just move it. Typing a real password into a command also saves it in your shell history.
 
 **b. Use a non-root nginx image from the league registry, and sign it** (Brock, Erika, Koga). The stock `nginx` image
 runs as root, so switch to `nginxinc/nginx-unprivileged`. Use its newest `-alpine` tag: old base images are full of
