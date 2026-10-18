@@ -1,0 +1,47 @@
+# Gym 5 · Koga · Soul Badge (Poison), CI-trust edition (`make demo TRUST=ci`)
+# Same gym, different root of trust. Instead of a key pair on your laptop, Koga
+# trusts one identity: this repo's GitHub Actions workflow, running on main.
+# Lance signs keylessly, so there is no signing key anywhere to steal. An image
+# pushed by anyone (or anything) else, even into the right GHCR repository, is
+# turned away. `make policies TRUST=ci` swaps this file in for the key-based one
+# and renders the identity below.
+apiVersion: policies.kyverno.io/v1
+kind: ImageValidatingPolicy
+metadata:
+  name: koga-signed-images
+  annotations:
+    poke-league.dev/gym: "5"
+    policies.kyverno.io/title: "Koga - signed by the league's CI"
+spec:
+  validationActions: [Audit]
+  autogen:
+    podControllers: {controllers: [deployments]}
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: [v1]
+        operations: [CREATE, UPDATE]
+        resources: [pods]
+    namespaceSelector:
+      matchLabels: {poke-league.dev/league: "true"}
+  matchImageReferences:
+    - glob: "*"
+  validationConfigurations:
+    mutateDigest: false
+    verifyDigest: false
+    required: true
+  attestors:
+    - name: lance
+      cosign:
+        keyless:
+          identities:
+            # The certificate Fulcio issues to the workflow says exactly who
+            # signed: this workflow file, on this branch, via GitHub's OIDC issuer.
+            - issuer: https://token.actions.githubusercontent.com
+              subject: __CI_IDENTITY__
+        # ctlog left at its defaults: the signature must be in the public Rekor
+        # transparency log, so every signing event is publicly auditable.
+  validations:
+    - expression: >-
+        images.containers.map(image, verifyImageSignatures(image, [attestors.lance])).all(n, n > 0)
+      message: "Koga: every image must be signed by the league's CI workflow on main."

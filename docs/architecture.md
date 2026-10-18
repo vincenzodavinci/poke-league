@@ -81,8 +81,9 @@ instead of an error. All of it is unit-tested against fake clients ([`board_test
   created. That's the safe default, but in production it needs HA (3+ replicas).
 - *No runtime detection.* The gyms judge what's *deployed*, not what a running process *does*. See Koffing's discussion
   question.
-- *Images are signed with a key on your laptop.* CI signs keylessly, but the local cluster trusts the key pair (see
-  [Lance](elite-four.md#-lance-build-sign-attest)).
+- *By default, images are signed with a key on your laptop.* `make demo TRUST=ci` switches to CI's keyless identity
+  instead (see the [Hall of Fame](elite-four.md#-hall-of-fame-ci--cluster-trust)). Any job in the workflow on `main`
+  can sign as that identity, so the workflow itself is part of what you trust.
 
 **Educational simplifications.** One kind node, a plain-HTTP local registry, Kubernetes Secrets stored base64 in etcd
 without encryption at rest, no TLS between services, a NodePort for the board, and `kubectl apply` instead of GitOps.
@@ -92,7 +93,7 @@ Each is a deliberate trade for a laptop that runs everything with one `make demo
 
 | Here | In production |
 |---|---|
-| `kind-registry:5000` + cosign key pair | ECR, ACR or Quay, and Koga verifies Lance's **keyless** GitHub Actions identity |
+| `kind-registry:5000` + cosign key pair | ECR, ACR or Quay, and Koga verifies CI's **keyless** identity, as `TRUST=ci` already does with GHCR |
 | Kubernetes Secrets | External Secrets Operator or the CSI driver, backed by AWS Secrets Manager, Key Vault or Vault, plus etcd encryption via KMS |
 | One Kyverno replica | 3+ replicas, a PodDisruptionBudget, and alerts on webhook latency and errors |
 | Pod Security Admission | the same on EKS and AKS; on OpenShift, Security Context Constraints (`restricted-v2`) do this job |

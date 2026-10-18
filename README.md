@@ -211,7 +211,8 @@ Steal the token, escape to the node, then fix each one until it's shiny: **[docs
 | <img src="assets/crests/68.svg" width="40"> | **Bruno** · SAST | Semgrep (Go, Dockerfile, Kubernetes, Actions rules), govulncheck |
 | <img src="assets/crests/94.svg" width="40"> | **Agatha** · dependencies | Trivy (vulns, misconfig, secrets), SPDX SBOM |
 | <img src="assets/crests/149.svg" width="40"> | **Lance** · supply chain | Buildx, keyless cosign signing (OIDC → Fulcio → Rekor), signed SBOM attestation, SLSA provenance |
-| <img src="assets/crests/6.svg" width="40"> | **Champion** · end-to-end | `make demo` on a fresh kind cluster, assert 8/8 badges, assert Team Rocket is denied in prod, OWASP ZAP DAST scan |
+| <img src="assets/crests/6.svg" width="40"> | **Champion** · end-to-end | `make demo` on a fresh kind cluster, then `make check`: 8/8 badges, Team Rocket denied in prod by exactly the right gyms. OWASP ZAP DAST scan |
+| <img src="assets/crests/150.svg" width="40"> | **Hall of Fame** · CI → cluster trust | A cluster that runs Lance's images straight from GHCR and trusts only this repo's workflow identity. A poisoned image pushed directly to GHCR is refused |
 
 Every third-party action is pinned to a commit SHA, permissions are least-privilege per job, and Dependabot keeps Go modules, base-image digests and actions current. Details: **[docs/elite-four.md](docs/elite-four.md)**.
 
@@ -268,6 +269,7 @@ Architecture, design decisions and the field notes from building it (the bugs wo
 4. Work through the [Team Rocket labs](docs/team-rocket.md): attack first, then fix.
 5. `make trivy` and watch CVEs become HP damage. Patch Meowth's image and revive it.
 6. Push to GitHub and watch the Elite Four run ([docs/elite-four.md](docs/elite-four.md)).
+   Then `make down && make demo TRUST=ci`: the same league, built from the images CI signed, with no key on your laptop.
 7. Write a ninth gym. Ideas: require NetworkPolicies, ban `NodePort` in prod, require the SBOM attestation that Lance already produces.
 
 ## Beginner cheat sheet & answers

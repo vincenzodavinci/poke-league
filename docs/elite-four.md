@@ -49,7 +49,8 @@ that can pass without looking is worse than no gate.
 
 Runs only on `main`, after all three Elite Four pass, once per service (matrix):
 
-1. **Build and push** to `ghcr.io/<you>/poke-league/<app>:<sha>` with Buildx (BuildKit SBOM + `provenance: mode=max`).
+1. **Build and push** to `ghcr.io/<you>/poke-league/<app>:<sha>` with Buildx, for amd64 and arm64 (BuildKit SBOM +
+   `provenance: mode=max`).
 2. **Keyless cosign signing.** The job's GitHub OIDC token is exchanged with Sigstore's Fulcio for a short-lived
    certificate saying "built by this repo's workflow on this ref", and the signature is recorded in the public Rekor
    transparency log. No signing key exists to leak.
@@ -71,13 +72,12 @@ Use cosign **v3** here. The installer gives CI cosign v3, which stores signature
 A v2 client looks for the old `sha256-<digest>.sig` tag and reports *no signatures found*, even though the image is
 signed. (The local `make sign` flow uses v2 and the classic format, so the two never mix.)
 
-> Locally, Koga trusts a cosign **key pair** because a laptop has no OIDC identity. Switching Koga to verify Lance's
-> keyless identity (`keyless.identities` with issuer `https://token.actions.githubusercontent.com`) is the natural next
-> step once you run against GHCR.
+Locally, Koga trusts a cosign **key pair** by default, because a laptop has no OIDC identity. The
+[Hall of Fame](#-hall-of-fame-ci--cluster-trust) closes that gap: a cluster that trusts Lance's identity instead.
 
 ## <img src="../assets/crests/6.svg" width="40"> Champion: end-to-end
 
-A fresh runner, `make demo`, then three assertions:
+A fresh runner, `make demo`, then `make check` (which you can run locally too), then DAST:
 
 1. Every non-Rocket workload holds **8/8 badges** (read from `/api/league`).
 2. **Every Team Rocket manifest is denied** when retargeted at `indigo-plateau`, and **by exactly the right gyms**. The
@@ -100,6 +100,7 @@ against bad input can't tell "blocking" apart from "broken".
 | Lt. Surge · resource limits | `champion` | `meowth`, `koffing`, `board-with-token` | Pallet Town, Champion |
 | Erika · trusted images | `champion`, `board-with-token` | `meowth`, `koffing`, `latest-tag`, `no-tag` (implicit `:latest`), `lookalike-registry` (`poke-league-evil/`) | Pallet Town, Champion |
 | Koga · signed images | the 3 league images, signed by `make sign` | `arbok`: right registry, real tag, flawless manifest, unsigned extra layer | Champion (needs a real registry) |
+| Koga · CI identity (`TRUST=ci`) | the 3 images Lance signed keylessly, pulled from GHCR | a poisoned image pushed straight to GHCR, refused by Koga alone | Hall of Fame |
 | Sabrina · health probes | `champion` | `meowth`, `koffing` | Pallet Town, Champion |
 | Blaine · no host access | `champion`, `meowth` | `koffing` | Pallet Town, Champion |
 | Giovanni · least privilege | `champion`, `board-with-token` (annotated opt-in) | `meowth`, `koffing` | Pallet Town, Champion |
@@ -109,6 +110,36 @@ against bad input can't tell "blocking" apart from "broken".
 The `Must pass`/`Must fail` resources live in [`deploy/policies/tests/resources.yaml`](../deploy/policies/tests/resources.yaml),
 and the expected verdicts in [`kyverno-test.yaml`](../deploy/policies/tests/kyverno-test.yaml). Run them locally with
 `make policy-test`.
+
+## <img src="../assets/crests/150.svg" width="40"> Hall of Fame: CI → cluster trust
+
+Lance proves *who built* an image. The Hall of Fame proves the cluster *acts on it*. It runs after Lance, on a fresh
+runner:
+
+1. `make demo TRUST=ci` builds a league that pulls the three images Lance just pushed to GHCR, pinned by digest, with
+   **no local build and no key**. Koga is swapped for its [CI-trust edition](../deploy/policies/ci-trust/05-koga-signed-images.yaml),
+   which admits an image only if its signature carries this exact identity:
+   ```
+   issuer:  https://token.actions.githubusercontent.com
+   subject: https://github.com/<you>/poke-league/.github/workflows/league.yml@refs/heads/main
+   ```
+   Erika's registry allowlist moves to `ghcr.io/<you>/poke-league/`.
+2. `make check TRUST=ci`: every league workload holds 8/8 **and runs an image from GHCR**, so the badges can't come from
+   anything else.
+3. **The attack.** The job pushes a poisoned `dex-api` (real bytes plus one layer) straight to GHCR, which is what a
+   stolen registry token allows. Right registry, right name, flawless manifest. It must be refused by **Koga alone**.
+
+Signatures from a fork, a pull request, another branch or another workflow carry a different subject, so they're
+refused too. Try it locally (once CI has published images for `origin/main`):
+
+```bash
+make down && make demo TRUST=ci && make check TRUST=ci
+```
+
+**What this does not prove.** Every job in `league.yml` on `main` signs with the same identity, so a compromised step
+*inside this workflow* could sign too. That's why the workflow pins actions to SHAs and keeps `id-token: write` on
+Lance alone. Pinning further is possible by matching the certificate's extra GitHub claims (Kyverno's
+`additionalExtensions`), or by requiring the SLSA provenance Lance already attaches.
 
 ## Supply-chain hygiene in the workflow itself
 

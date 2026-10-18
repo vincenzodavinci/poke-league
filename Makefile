@@ -16,6 +16,34 @@ APPS     := dex-api sprite-svc league-board
 TAG      := $(shell git rev-parse --short HEAD 2>/dev/null || echo dev)
 BUILD    := .build
 
+# Where the league's images come from, and who Koga trusts:
+#   TRUST=key  (default) built here, pushed to the local registry, signed with
+#              the key pair in .cosign/. Works offline, no GitHub account needed.
+#   TRUST=ci   built by CI (Lance) and pulled from GHCR. Koga admits an image
+#              only if this repo's workflow, running on main, signed it.
+TRUST       ?= key
+REPO        ?= $(shell git remote get-url origin 2>/dev/null | sed -E 's|^.*github\.com[:/]||; s|\.git$$||')
+GHCR        := ghcr.io/$(shell echo '$(REPO)' | tr '[:upper:]' '[:lower:]')
+CI_IDENTITY ?= https://github.com/$(REPO)/.github/workflows/league.yml@refs/heads/main
+CI_SHA      ?= $(shell git rev-parse origin/main 2>/dev/null)
+ifeq ($(TRUST),ci)
+SUPPLY      := ci-images
+IMAGES_FROM := $(GHCR)
+ARBOK_FROM  := $(GHCR)
+POLICY_DEPS :=
+RENDER_ARGS := --trust ci --registry $(GHCR)/ --identity $(CI_IDENTITY)
+ARBOK_GYMS  := erika koga
+else ifeq ($(TRUST),key)
+SUPPLY      := images sign
+IMAGES_FROM := $(REG_IN)
+ARBOK_FROM  := $(REG)
+POLICY_DEPS := .cosign/cosign.key
+RENDER_ARGS :=
+ARBOK_GYMS  := koga
+else
+$(error TRUST must be key or ci, not "$(TRUST)")
+endif
+
 KYVERNO_CHART := 3.9.1
 TRIVY_CHART   := 0.37.0
 COSIGN_IMAGE  := ghcr.io/sigstore/cosign/cosign:v2.6.1
@@ -52,7 +80,7 @@ lint: ## go vet + Dockerfile lint
 	docker run --rm -i $(HADOLINT) < build/Dockerfile
 
 ##@ Build the league
-demo: cluster kyverno images sign policies deploy rocket ## Everything, start to finish
+demo: cluster kyverno $(SUPPLY) policies deploy rocket ## Everything, start to finish (TRUST=ci: from CI's signed GHCR images)
 	@echo; echo "League Board: http://localhost:8088   (make trivy adds CVE-based HP)"
 
 cluster: ## Create the kind cluster "kanto" + local registry
@@ -80,6 +108,11 @@ images: ## Build and push all service images; record their digests
 	$(COSIGN) generate-key-pair
 	@echo "Generated .cosign/cosign.key (gitignored) and .cosign/cosign.pub"
 
+ci-images: ## TRUST=ci: use the images CI built and signed for CI_SHA (no local build, no key)
+	@test -n "$(CI_SHA)" || { echo "CI_SHA is empty: set it to a commit that CI published"; exit 1; }
+	@echo "==> images Lance published for $(CI_SHA)"
+	python3 -I scripts/ghcr_digests.py $(GHCR) $(CI_SHA) $(APPS)
+
 sign: .cosign/cosign.key ## Sign every image with the league key (Lance's job in CI)
 	@for app in $(APPS); do \
 	  ref=$(REG_IN)/$$app@$$(cat $(BUILD)/digests/$$app); \
@@ -87,8 +120,8 @@ sign: .cosign/cosign.key ## Sign every image with the league key (Lance's job in
 	  $(COSIGN) sign --yes --key /keys/cosign.key --allow-insecure-registry --allow-http-registry --tlog-upload=false $$ref; \
 	done
 
-policies: .cosign/cosign.key ## Open the 8 gyms (render the cosign key into Koga, apply)
-	python3 -I scripts/render_policies.py
+policies: $(POLICY_DEPS) ## Open the 8 gyms (render Koga's root of trust, apply)
+	python3 -I scripts/render_policies.py $(RENDER_ARGS)
 	$(K) apply -k $(BUILD)/policies
 	@echo "Waiting for all 16 gyms (8 audit + 8 enforce) to open..."
 	@for i in $$(seq 1 60); do \
@@ -102,7 +135,7 @@ deploy: ## Deploy the app to Pallet Town (dev) and Indigo Plateau (prod), pinned
 	  mkdir -p $(BUILD)/overlays/$$env; \
 	  { echo "resources: [../../../deploy/k8s/overlays/$$env]"; echo "images:"; \
 	    for app in $(APPS); do \
-	      echo "  - {name: $(REG_IN)/$$app, digest: $$(cat $(BUILD)/digests/$$app)}"; \
+	      echo "  - {name: $(REG_IN)/$$app, newName: $(IMAGES_FROM)/$$app, digest: $$(cat $(BUILD)/digests/$$app)}"; \
 	    done; } > $(BUILD)/overlays/$$env/kustomization.yaml; \
 	  $(K) apply -k $(BUILD)/overlays/$$env; \
 	done
@@ -113,7 +146,7 @@ rocket: ## Release Team Rocket into their hideout (the CTF lab)
 	@# Arbok: dex-api plus one extra layer. New content means a new digest that
 	@# nobody signed. (A plain `docker tag` would keep the digest, and with it
 	@# the signature: cosign signs content, not tags.)
-	printf 'FROM $(REG)/dex-api:$(TAG)\nLABEL dev.poke-league.tampered-by="team-rocket"\n' | \
+	printf 'FROM %s\nLABEL dev.poke-league.tampered-by="team-rocket"\n' "$(ARBOK_FROM)/dex-api@$$(cat $(BUILD)/digests/dex-api)" | \
 	  docker build -q -t $(REG)/dex-api:arbok-poisoned - >/dev/null
 	docker push -q $(REG)/dex-api:arbok-poisoned >/dev/null
 	$(K) apply -k deploy/rocket
@@ -138,6 +171,19 @@ board-dev: ## Port-forward the Pallet Town board to http://localhost:8081
 reports: ## Show every gym result straight from Kyverno's PolicyReports
 	$(K) get policyreports -A -o custom-columns='NS:.metadata.namespace,KIND:.scope.kind,NAME:.scope.name,PASS:.summary.pass,FAIL:.summary.fail'
 
+check: ## Prove the league works: 8/8 everywhere, Team Rocket refused by exactly the right gyms
+	python3 -I scripts/check_board.py $(if $(filter ci,$(TRUST)),--image-prefix $(GHCR)/)
+	@for app in meowth koffing arbok; do \
+	  case $$app in \
+	    meowth)  gyms="brock erika giovanni misty sabrina surge" ;; \
+	    koffing) gyms="blaine brock erika giovanni sabrina surge" ;; \
+	    arbok)   gyms="$(ARBOK_GYMS)" ;; \
+	  esac; \
+	  sed 's/namespace: team-rocket/namespace: indigo-plateau/' deploy/rocket/$$app.yaml | \
+	    CTX=$(CTX) scripts/expect_denied.sh $$app "$$gyms"; \
+	done
+	CTX=$(CTX) scripts/expect_admitted.sh dex-api
+
 challenge: ## Try to sneak Team Rocket into prod (spoiler: the gyms say no)
 	-sed 's/namespace: team-rocket/namespace: indigo-plateau/' deploy/rocket/meowth.yaml | $(K) apply --dry-run=server -f - 2>&1 | fold -s -w 120
 
@@ -147,4 +193,4 @@ down: ## Delete the cluster and the local registry
 	docker rm -f kind-registry >/dev/null 2>&1 || true
 	rm -rf $(BUILD)
 
-.PHONY: help assets crests test policy-test lint demo cluster kyverno images sign policies deploy rocket trivy board board-dev reports challenge down
+.PHONY: help assets crests test policy-test lint demo cluster kyverno images ci-images sign policies deploy rocket trivy board board-dev reports check challenge down

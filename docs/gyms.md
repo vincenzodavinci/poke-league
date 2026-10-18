@@ -124,8 +124,10 @@ produce a policy set with Koga missing. (Why that matters is in the field notes 
 **Try it.** `make challenge` covers Meowth. For Arbok, see [team-rocket.md](team-rocket.md#arbok).
 
 **Go further.** In CI, Lance signs **keyless**: no long-lived key, just a short-lived certificate bound to the GitHub
-Actions OIDC identity and recorded in the public Rekor log. Rewriting Koga to verify that identity (`keyless.identities`)
-is a great exercise once the images live in GHCR.
+Actions OIDC identity and recorded in the public Rekor log. Koga's
+[CI-trust edition](../deploy/policies/ci-trust/05-koga-signed-images.yaml) verifies that identity
+(`keyless.identities`). Run it with `make demo TRUST=ci`, and read how CI proves it in the
+[Hall of Fame](elite-four.md#-hall-of-fame-ci--cluster-trust). Compare the two files: same gym, different root of trust.
 
 ## <img src="../assets/badges/6.svg" width="28"> Gym 6 · Sabrina · `sabrina-health-probes`
 
