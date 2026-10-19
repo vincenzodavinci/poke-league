@@ -28,7 +28,7 @@ spec:
     allowInsecureRegistry: true        # the local kind registry speaks plain HTTP
   validationConfigurations:
     mutateDigest: false
-    verifyDigest: false
+    verifyDigest: true       # the image is referenced by digest, so what's verified is what runs
     required: true
   attestors:
     - name: league
@@ -39,7 +39,14 @@ spec:
         ctlog:
           insecureIgnoreTlog: true     # offline lab: no public transparency log
           insecureIgnoreSCT: true
+  variables:
+    # Init and ephemeral containers run code too. Checking only images.containers
+    # would let an unsigned image in through an init container.
+    - name: allImages
+      expression: >-
+        images.containers + images.?initContainers.orValue([]) +
+        images.?ephemeralContainers.orValue([])
   validations:
     - expression: >-
-        images.containers.map(image, verifyImageSignatures(image, [attestors.league])).all(n, n > 0)
+        variables.allImages.map(image, verifyImageSignatures(image, [attestors.league])).all(n, n > 0)
       message: "Koga: every image must be signed with the league's cosign key."

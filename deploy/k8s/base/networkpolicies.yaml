@@ -1,6 +1,11 @@
 # Zero-trust networking: deny everything, then allow exactly the paths the
 # app needs.   browser -> league-board -> {dex-api, sprite-svc}
 #                          league-board -> kube-apiserver
+#
+# The last path is the only one that leaves the namespace, and it's pinned to
+# the API server's own addresses: `make deploy` looks them up and adds the
+# league-board-apiserver policy (see the Makefile). A port alone (443, 6443)
+# would let a compromised board talk to any HTTPS server on the internet.
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -42,7 +47,6 @@ spec:
             matchExpressions:
               - {key: app.kubernetes.io/name, operator: In, values: [dex-api, sprite-svc]}
       ports: [{port: 8080}]
-    - ports: [{port: 6443}, {port: 443}]   # kube-apiserver (kind serves it on 6443)
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy

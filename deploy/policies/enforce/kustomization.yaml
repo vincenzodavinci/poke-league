@@ -4,6 +4,7 @@ kind: Kustomization
 nameSuffix: -enforce
 resources:
   - ../gyms
+  - ../prod
 patches:
   - target: {group: policies.kyverno.io}
     patch: |-

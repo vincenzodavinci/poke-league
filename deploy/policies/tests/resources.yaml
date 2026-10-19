@@ -34,7 +34,7 @@ spec:
   serviceAccountName: league-board
   containers:
     - name: app
-      image: kind-registry:5000/poke-league/league-board:v1.2.3
+      image: kind-registry:5000/poke-league/league-board@sha256:4d58ad4e21c071ffcfae552c727419d1d78b2874c5b4ecd31838da3b38b2b1f7
 ---
 # Meowth: the copy-pasted Deployment.
 apiVersion: v1
@@ -92,6 +92,47 @@ spec:
   containers:
     - {name: app, image: "kind-registry:5000/poke-league-evil/dex-api:v1"}
 ---
+# A real version tag is still a moving target: whoever can push can re-point it.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mutable-tag
+  namespace: pallet-town
+spec:
+  containers:
+    - {name: app, image: "kind-registry:5000/poke-league/dex-api:v1.2.3"}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: not-a-digest
+  namespace: pallet-town
+spec:
+  containers:
+    - {name: app, image: "kind-registry:5000/poke-league/dex-api@sha256:4d58ad4e"}
+---
+# tag@digest is fine: the digest is what gets pulled, the tag is a label.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tag-and-digest
+  namespace: pallet-town
+spec:
+  containers:
+    - {name: app, image: "kind-registry:5000/poke-league/dex-api:v1.2.3@sha256:4d58ad4e21c071ffcfae552c727419d1d78b2874c5b4ecd31838da3b38b2b1f7"}
+---
+# An unsigned-looking image slipped in as an init container: Erika reads those too.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sneaky-init
+  namespace: pallet-town
+spec:
+  initContainers:
+    - {name: setup, image: "busybox:1.36"}
+  containers:
+    - {name: app, image: "kind-registry:5000/poke-league/dex-api@sha256:4d58ad4e21c071ffcfae552c727419d1d78b2874c5b4ecd31838da3b38b2b1f7"}
+---
 # Brock checks init containers too.
 apiVersion: v1
 kind: Pod
@@ -110,3 +151,31 @@ spec:
         allowPrivilegeEscalation: false
         readOnlyRootFilesystem: true
         capabilities: {drop: ["ALL"]}
+---
+# The champion, after someone ran `kubectl debug` with a privileged busybox.
+# Ephemeral containers run on the pod too, so the gyms judge them too.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sneaky-debug
+  namespace: pallet-town
+spec:
+  serviceAccountName: dex-api
+  automountServiceAccountToken: false
+  securityContext: {runAsNonRoot: true, seccompProfile: {type: RuntimeDefault}}
+  containers:
+    - name: app
+      image: kind-registry:5000/poke-league/dex-api@sha256:4d58ad4e21c071ffcfae552c727419d1d78b2874c5b4ecd31838da3b38b2b1f7
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities: {drop: ["ALL"]}
+      resources: {requests: {cpu: 10m, memory: 32Mi}, limits: {memory: 64Mi}}
+      livenessProbe: {httpGet: {path: /healthz, port: 8080}}
+      readinessProbe: {httpGet: {path: /readyz, port: 8080}}
+  ephemeralContainers:
+    - name: debug
+      image: busybox:latest
+      env:
+        - {name: API_TOKEN, value: "borrowed-from-a-laptop"}
+      securityContext: {privileged: true}

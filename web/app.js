@@ -62,9 +62,15 @@ function workloadCard(w) {
         el("span", { class: "label" }, "HP"),
         el("div", { class: "bar" }, el("div", { class: "fill", style: { width: `${w.hp}%`, background: hpColor(w.hp) } })),
         el("span", {}, `${w.hp}/100`));
+  // No scan is never shown as a clean scan.
+  const scanText = {
+    "not-installed": "no CVE scan (make trivy)",
+    "not-scanned": "awaiting Trivy scan",
+    error: "CVE scan unreadable",
+  };
   const vulns = w.vulns
     ? el("div", { class: "vulns" }, `${w.vulns.critical} critical · ${w.vulns.high} high · ${w.vulns.medium} medium CVEs`)
-    : el("div", { class: "vulns" }, "awaiting Trivy scan");
+    : el("div", { class: `vulns ${w.scan === "error" ? "scan-error" : ""}` }, scanText[w.scan] ?? "awaiting Trivy scan");
 
   const badges = el("div", { class: "badges" }, w.badges.map((b, i) => {
     const g = gyms[i];
@@ -87,21 +93,29 @@ function workloadCard(w) {
     el("h3", {}, w.name),
     el("div", { class: "img", title: w.image }, `${title(name)} · ${shortImage(w.image)}`),
     hp, vulns, badges,
-    el("div", { class: "earned-count" }, `${w.earned}/8 badges${fainted ? " · fainted" : ""}`),
+    el("div", { class: "earned-count" },
+      `${w.earned}/8 badges${fainted ? " · fainted" : ""}`,
+      // A card stands for every replica, and shows the worst one.
+      w.replicas > 1 ? ` · worst of ${w.replicas} pods` : ""),
     why);
 }
 
 function renderLeague() {
   const root = document.getElementById("towns");
   if (!league) return;
+  // Reports the board couldn't read: say so, rather than look clean.
+  const problems = league.problems?.length
+    ? el("div", { class: "problems", role: "alert" },
+        el("b", {}, "The board's view is incomplete: "), league.problems.join(" · "))
+    : null;
   const byNs = {};
   for (const w of league.workloads) (byNs[w.namespace] ??= []).push(w);
   const towns = Object.keys(TOWNS).filter((ns) => byNs[ns]?.length);
   if (!towns.length) {
-    root.replaceChildren(el("p", { class: "empty" }, "No trainers on the route yet. Run ", el("code", {}, "make deploy"), "."));
+    root.replaceChildren(...[problems, el("p", { class: "empty" }, "No trainers on the route yet. Run ", el("code", {}, "make deploy"), ".")].filter(Boolean));
     return;
   }
-  root.replaceChildren(...towns.map((ns) => {
+  root.replaceChildren(...[problems].filter(Boolean), ...towns.map((ns) => {
     const t = TOWNS[ns];
     return el("section", { class: "town" },
       el("div", { class: "town-head" },

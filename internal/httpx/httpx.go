@@ -57,11 +57,24 @@ func Logged(log *slog.Logger, next http.Handler) http.Handler {
 	})
 }
 
-// Health registers liveness and readiness probes on mux.
-func Health(mux *http.ServeMux) {
+// Health registers liveness and readiness probes on mux. /healthz only says
+// the process is up. /readyz also runs every ready check, so a service that
+// can't do its job (the board without the Kubernetes API) is taken out of
+// the Service instead of serving errors.
+func Health(mux *http.ServeMux, ready ...func(context.Context) error) {
 	ok := func(w http.ResponseWriter, _ *http.Request) { _, _ = w.Write([]byte("ok")) }
 	mux.HandleFunc("GET /healthz", ok)
-	mux.HandleFunc("GET /readyz", ok)
+	mux.HandleFunc("GET /readyz", func(w http.ResponseWriter, r *http.Request) {
+		ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
+		defer cancel()
+		for _, check := range ready {
+			if err := check(ctx); err != nil {
+				http.Error(w, "not ready: "+err.Error(), http.StatusServiceUnavailable)
+				return
+			}
+		}
+		ok(w, r)
+	})
 }
 
 // Logger returns the JSON logger all services use.

@@ -173,7 +173,7 @@ jobs:
         with: {persist-credentials: false}
       - name: Build the league (cluster, Kyverno, images, signatures, gyms, app, Team Rocket)
         run: make demo
-      - name: Every league workload holds 8/8, and Team Rocket can't get into prod (but the champion can)
+      - name: Every league workload holds 8/8, Team Rocket can't get into prod (not even via init or debug containers), the champion can
         run: make check
       - name: DAST — OWASP ZAP baseline scan of the League Board
         uses: zaproxy/action-baseline@de8ad967d3548d44ef623df22cf95c3b0baf8b25 # v0.15.0
@@ -203,7 +203,7 @@ jobs:
         run: make demo TRUST=ci REPO="$GITHUB_REPOSITORY" CI_SHA="$GITHUB_SHA"
       - name: The league holds on CI-signed images, and Team Rocket can't get into prod
         run: make check TRUST=ci REPO="$GITHUB_REPOSITORY"
-      - name: A poisoned image pushed straight to GHCR is refused, by Koga alone
+      - name: A poisoned image pushed straight to GHCR is refused, by Koga alone, even as an init container
         env:
           IMG: ghcr.io/${{ github.repository }}/dex-api
         run: |
@@ -214,5 +214,8 @@ jobs:
           docker push -q "$IMG:arbok-poisoned"
           digest=$(python3 -I scripts/ghcr_digests.py --print "ghcr.io/$GITHUB_REPOSITORY" arbok-poisoned dex-api)
           sed -e 's/namespace: team-rocket/namespace: indigo-plateau/' \
-              -e "s|image: .*|image: $IMG@$digest|" deploy/rocket/arbok.yaml |
-            scripts/expect_denied.sh "arbok (in GHCR)" koga
+              -e "s|image: .*|image: $IMG@$digest|" deploy/rocket/arbok.yaml > arbok-ghcr.yaml
+          scripts/expect_denied.sh "arbok (in GHCR)" koga < arbok-ghcr.yaml
+          # The same image tucked into an init container, behind CI's own signed dex-api.
+          python3 -I scripts/sneak_init.py arbok-ghcr.yaml "$IMG@$(cat .build/digests/dex-api)" |
+            scripts/expect_denied.sh "arbok init container (in GHCR)" koga

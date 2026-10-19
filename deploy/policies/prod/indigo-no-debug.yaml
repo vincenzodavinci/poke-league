@@ -1,0 +1,33 @@
+# Indigo Plateau's door guard: no ephemeral containers in prod.
+# `kubectl debug` adds a container to a running pod through its own API
+# endpoint (pods/ephemeralcontainers). The gyms judge pods as they're created;
+# a container attached afterwards would skip every one of them. So prod refuses
+# the endpoint outright. Debug in Pallet Town, where the gyms still report on
+# what you attach, or ship a fix and roll it out.
+#
+# Not a gym: it earns no badge. It lives in ../enforce only (prod), apart from
+# ../gyms, because Kyverno only autogenerates Deployment rules for a policy that
+# matches exactly `pods`, and the gyms depend on that.
+apiVersion: policies.kyverno.io/v1
+kind: ValidatingPolicy
+metadata:
+  name: indigo-no-debug
+  annotations:
+    policies.kyverno.io/title: "Indigo Plateau - no ephemeral containers in prod"
+spec:
+  validationActions: [Deny]
+  evaluation:
+    background: {enabled: false}      # an admission rule: there's nothing to re-check later
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: [v1]
+        operations: [UPDATE]
+        resources: [pods/ephemeralcontainers]
+    namespaceSelector:
+      matchLabels: {poke-league.dev/league: "true"}
+  validations:
+    - expression: size(object.spec.?ephemeralContainers.orValue([])) == 0
+      message: >-
+        Indigo Plateau: no ephemeral containers (kubectl debug) in prod. Debug in Pallet Town,
+        or ship a fix and roll it out.

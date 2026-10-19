@@ -91,22 +91,29 @@ limits often cause more throttling harm than good. That's a real debate worth re
 
 ## <img src="../assets/badges/4.svg" width="28"> Gym 4 · Erika · `erika-trusted-images`
 
-**Rule.** Images come from `kind-registry:5000/poke-league/` and carry a version tag or digest. `:latest`, and images with
-no tag at all (which means `:latest`), are rejected.
+**Rule.** Images come from `kind-registry:5000/poke-league/` and are pinned by digest (`@sha256:` and all 64 hex
+characters). Tags alone are rejected: `:latest`, no tag (which means `:latest`), and real version tags like `:v1.2.0`
+too. `name:tag@sha256:...` is fine, because the digest is what gets pulled. Erika checks init and ephemeral
+containers as well as the main ones.
 
 **Why.** A registry allowlist stops "just pull it from Docker Hub" and typosquats. Look at the `lookalike-registry` test
-case: `poke-league-evil/` is caught because the check includes the trailing slash. `:latest` is not a version. It can
-point at different bytes tomorrow, so you can't reproduce, roll back or audit what ran.
+case: `poke-league-evil/` is caught because the check includes the trailing slash. A tag is a pointer: anyone who can
+push to the registry can move `:v1.2.0` to different bytes tomorrow, and then you can't reproduce, roll back or audit
+what ran, and a signature check on the tag can be stale (see Koga's second lesson). A digest *is* the bytes.
 
 **Where it's satisfied.** `make deploy` rewrites every image to `@sha256:<digest>`
 ([`.build/overlays`](../Makefile)), so prod runs exactly the bytes that were built and signed.
 
-**Try it.** `k -n pallet-town run latest --image=kind-registry:5000/poke-league/dex-api:latest --dry-run=server`
+**Try it.** `k -n pallet-town run tagged --image=kind-registry:5000/poke-league/dex-api:v1.2.0 --dry-run=server`: a
+real version tag, and Erika still warns.
 
 ## <img src="../assets/badges/5.svg" width="28"> Gym 5 · Koga · `koga-signed-images`
 
-**Rule.** Every image must carry a valid [cosign](https://github.com/sigstore/cosign) signature from the league's key.
-This one is an `ImageValidatingPolicy`: Kyverno fetches the signature from the registry at admission time and verifies it.
+**Rule.** Every image must carry a valid [cosign](https://github.com/sigstore/cosign) signature from the league's key,
+and that means *every* image the pod runs: regular, init and ephemeral containers. An unsigned image in an init
+container runs before your app does, so checking only `images.containers` would be a way around the gym. This one is an
+`ImageValidatingPolicy`: Kyverno fetches the signature from the registry at admission time and verifies it, and
+`verifyDigest: true` makes it insist on the digest, so what's verified is what runs.
 
 **Why.** Erika checks where an image claims to come from. Koga proves who built it. If an attacker can push to your
 registry (stolen CI token, misconfigured permissions), every other gym still passes. See Arbok.
@@ -121,7 +128,13 @@ produce a policy set with Koga missing. (Why that matters is in the field notes 
 2. **Verification results are cached by image reference.** If a tag once pointed at signed content, the cached "valid"
    can outlive the tag being re-pointed. One more reason to deploy by digest.
 
-**Try it.** `make challenge` covers Meowth. For Arbok, see [team-rocket.md](team-rocket.md#arbok).
+**Try it.** `make challenge` covers Meowth. For Arbok, see [team-rocket.md](team-rocket.md#arbok). `make check` also
+hides Arbok's poisoned image in an init container behind a properly signed app image: Koga alone refuses it.
+
+**And `kubectl debug`?** Ephemeral containers are added to a *running* pod through a separate API endpoint
+(`pods/ephemeralcontainers`) that pod admission never sees. So in prod, a separate guard,
+[`indigo-no-debug`](../deploy/policies/prod/indigo-no-debug.yaml), refuses that endpoint outright. In Pallet Town you can
+still debug, and the gyms' background scans judge what you attached.
 
 **Go further.** In CI, Lance signs **keyless**: no long-lived key, just a short-lived certificate bound to the GitHub
 Actions OIDC identity and recorded in the public Rekor log. Koga's
