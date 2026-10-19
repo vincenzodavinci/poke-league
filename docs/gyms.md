@@ -29,11 +29,13 @@ A scratch pod to experiment with:
 
 ```bash
 alias k='kubectl --context kind-kanto'
-k -n pallet-town run trainer --image=kind-registry:5000/poke-league/dex-api:dev --dry-run=server -o yaml >/dev/null
+k -n pallet-town run trainer --image=kind-registry:5000/poke-league/dex-api@$(cat .build/digests/dex-api) \
+  --dry-run=server -o yaml >/dev/null
 ```
 
 That one line already fails four gyms (Brock, Lt. Surge, Sabrina, Giovanni), and Pod Security Admission warns about it
-too. Read the warnings it prints.
+too. Read the warnings it prints. (The image is the real, signed dex-api, pinned by the digest `make images` recorded,
+so Erika and Koga pass. Swap in a tag like `dex-api:v1` and Erika and Koga join in.)
 
 ---
 
@@ -50,8 +52,15 @@ a very small box.
 **Where it's satisfied.** `deploy/k8s/base/*.yaml` (lines marked `# Brock`), plus the distroless base image, which runs
 as UID 65532 and has no shell.
 
-**Try it.** Copy `deploy/k8s/base/dex-api.yaml`, set `readOnlyRootFilesystem: false`, apply it to `pallet-town` and watch
-the Boulder Badge go dark on the board. Then apply the same file to `indigo-plateau`.
+**Try it.** Take `deploy/k8s/base/dex-api.yaml`, pin its image to the signed digest (as `make deploy` does, so only
+Brock has something to say), set `readOnlyRootFilesystem: false`, and apply it to `pallet-town`:
+```bash
+sed -e "s|dex-api:dev.*|dex-api@$(cat .build/digests/dex-api)|" \
+    -e 's/readOnlyRootFilesystem: true/readOnlyRootFilesystem: false/' deploy/k8s/base/dex-api.yaml > soft-dex.yaml
+k -n pallet-town apply -f soft-dex.yaml
+```
+Watch the Boulder Badge go dark on the board. Then try `k -n indigo-plateau apply -f soft-dex.yaml --dry-run=server`,
+and put Pallet Town back with `make deploy`.
 
 **Go further.** Kubernetes ships the same idea built in: Pod Security Admission. Look at the
 `pod-security.kubernetes.io/*` labels in [`namespaces.yaml`](../deploy/k8s/cluster/namespaces.yaml). Prod enforces
@@ -87,7 +96,9 @@ caps what one container can take. Without it, a leak or a deliberately memory-hu
 everything else on it, which makes it a cheap denial of service. (No CPU limit is required: CPU is compressible, and CPU
 limits often cause more throttling harm than good. That's a real debate worth reading up on.)
 
-**Try it.** Remove `limits` from a copy of `sprite-svc.yaml` and apply it to `pallet-town`.
+**Try it.** Remove `limits` from a copy of `sprite-svc.yaml` and apply it to `pallet-town`. Pin its image the same way
+as in Brock's exercise (`sed "s|sprite-svc:dev.*|sprite-svc@$(cat .build/digests/sprite-svc)|"`), or Erika and Koga
+will object too. `make deploy` puts it back.
 
 ## <img src="../assets/badges/4.svg" width="28"> Gym 4 · Erika · `erika-trusted-images`
 

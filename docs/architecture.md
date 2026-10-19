@@ -37,14 +37,18 @@ The UI ([`web/`](../web)) is plain JavaScript with no build step and no dependen
 
 - **Badges**: Kyverno writes a `PolicyReport` per Pod. Each result names a policy; `brock-hardened-pods` and
   `brock-hardened-pods-enforce` both map to Brock ([`gyms.go`](../internal/board/gyms.go)). Any failing rule loses the
-  badge, and a gym with no result yet is "unknown".
+  badge. A gym with no result yet, or one that skipped the pod, is "unknown": a skip isn't evidence.
+- **Replicas**: one card per app, showing its **worst** replica (and how many pods it stands for), so a healthy pod
+  can't hide a failing one.
 - **HP**: Trivy Operator writes a `VulnerabilityReport` per ReplicaSet container. The board maps pod → owning ReplicaSet
   and computes `HP = 100 − 25·critical − 8·high − 2·medium` ([`board.go`](../internal/board/board.go)).
-- **Shiny**: 8/8 badges and zero high or critical CVEs.
+- **Shiny**: 8/8 badges and zero high or critical CVEs, from a complete Trivy report. No report is never "clean".
 - **Pokémon**: the `poke-league.dev/pokemon` annotation, or a stable hash of the app name.
 
-Both report types are read with the dynamic client, so a missing CRD (Trivy not installed) degrades to "awaiting scan"
-instead of an error. All of it is unit-tested against fake clients ([`board_test.go`](../internal/board/board_test.go)).
+Both report types are read with the dynamic client. A missing CRD (Trivy not installed) shows as "no CVE scan (make
+trivy)"; a workload Trivy hasn't reached yet as "awaiting Trivy scan"; a report missing a severity count, or one the
+board couldn't read, as "CVE scan unreadable". Read errors (RBAC, API trouble) also appear in a banner across the
+board, so an incomplete view never looks like a clean one. All of it is unit-tested against fake clients ([`board_test.go`](../internal/board/board_test.go)).
 
 ## Design decisions
 
@@ -149,5 +153,7 @@ These all happened while the repo was being built. Each one is a lesson in its o
 | `kind create` fails with *could not find a log line ... Multi-User System* | `colima ssh -- sudo sysctl -w fs.inotify.max_user_instances=1024 fs.inotify.max_user_watches=1048576` (Linux: same `sysctl` on the host) |
 | Board at `localhost:8088` doesn't load | `lsof -nP -iTCP:8088`; then `make board-dev` uses a port-forward instead |
 | All badges "unknown" | Kyverno's reports controller runs a background scan every few minutes; check `make reports` |
-| HP shows "awaiting Trivy scan" | `make trivy`; the first vulnerability DB download takes a few minutes |
+| HP shows "no CVE scan (make trivy)" | Trivy isn't installed: `make trivy` |
+| HP shows "awaiting Trivy scan" | Trivy is installed but hasn't scanned that workload yet; the first vulnerability DB download takes a few minutes |
+| "The board's view is incomplete" banner, or "CVE scan unreadable" | The board couldn't read a report: check its RBAC (`deploy/k8s/cluster/rbac.yaml`) and `k -n indigo-plateau logs deploy/league-board` |
 | `only N/17 policies are ready` | `kubectl --context kind-kanto get vpol,ivpol` and `-o yaml` the one that isn't Ready |

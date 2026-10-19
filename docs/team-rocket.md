@@ -67,8 +67,8 @@ k -n team-rocket get vulnerabilityreports -o wide
 Get Meowth to 8/8. You'll need to:
 - run as non-root with a read-only root filesystem (hint: `nginxinc/nginx-unprivileged` listens on 8080 and needs
   writable `emptyDir`s for `/tmp` and its cache dir),
-- push the image into the league registry and sign it (`docker push localhost:5001/poke-league/...`, then the `cosign sign`
-  line from the Makefile),
+- push the image into the league registry, sign it (`docker push localhost:5001/poke-league/...`, then the `cosign sign`
+  line from the Makefile), and reference it by digest (`...@sha256:...`): Erika rejects tags, even real version tags,
 - move `DB_PASSWORD` to a `secretKeyRef`,
 - give it its own ServiceAccount with `automountServiceAccountToken: false`,
 - add requests/limits and probes.
@@ -135,8 +135,8 @@ Seven gyms waved it through. Only Koga checks who built the bytes.
 # The signature lives in the registry next to the image, keyed by digest:
 docker run --rm --network kind -v $PWD/.cosign:/keys ghcr.io/sigstore/cosign/cosign:v2.6.1 \
   verify --key /keys/cosign.pub --allow-insecure-registry --allow-http-registry --insecure-ignore-tlog \
-  kind-registry:5000/poke-league/dex-api:dev            # verified
-# ...and the same for :arbok-poisoned                   # no signatures found
+  kind-registry:5000/poke-league/dex-api@$(cat .build/digests/dex-api)   # verified
+# ...and the same for Arbok's: dex-api@$(cat .build/digests/arbok)        # no signatures found
 ```
 
 ### Two things worth knowing
