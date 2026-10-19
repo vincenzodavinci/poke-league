@@ -95,16 +95,19 @@ against bad input can't tell "blocking" apart from "broken".
 
 | Gym | Must pass | Must fail (incl. subtle bypasses) | Where |
 |---|---|---|---|
-| Brock · hardened pods | `champion` | `meowth`, `koffing`, `board-with-token`, `soft-init` (only the *init* container is soft) | Pallet Town (Kyverno CLI), Champion |
-| Misty · no plaintext secrets | `champion`, `koffing` | `meowth` | Pallet Town, Champion |
+| Brock · hardened pods | `champion` | `meowth`, `koffing`, `board-with-token`, `soft-init` (only the *init* container is soft), `sneaky-debug` (only the *ephemeral* container is) | Pallet Town (Kyverno CLI), Champion |
+| Misty · no plaintext secrets | `champion`, `koffing` | `meowth`, `sneaky-debug` (token in an ephemeral container) | Pallet Town, Champion |
 | Lt. Surge · resource limits | `champion` | `meowth`, `koffing`, `board-with-token` | Pallet Town, Champion |
-| Erika · trusted images | `champion`, `board-with-token` | `meowth`, `koffing`, `latest-tag`, `no-tag` (implicit `:latest`), `lookalike-registry` (`poke-league-evil/`) | Pallet Town, Champion |
-| Koga · signed images | the 3 league images, signed by `make sign` | `arbok`: right registry, real tag, flawless manifest, unsigned extra layer | Champion (needs a real registry) |
-| Koga · CI identity (`TRUST=ci`) | the 3 images Lance signed keylessly, pulled from GHCR | a poisoned image pushed straight to GHCR, refused by Koga alone | Hall of Fame |
+| Erika · trusted images | `champion`, `board-with-token`, `tag-and-digest` | `meowth`, `koffing`, `latest-tag`, `no-tag` (implicit `:latest`), `lookalike-registry` (`poke-league-evil/`), `mutable-tag` (`:v1.2.3`), `not-a-digest` (truncated), `sneaky-init`, `sneaky-debug` | Pallet Town, Champion |
+| Koga · signed images | the 3 league images, signed by `make sign` | `arbok`: right registry, pinned by digest, flawless manifest, unsigned extra layer; `arbok (init container)`: the same image hidden in an init container behind a signed app | Champion (needs a real registry) |
+| Koga · CI identity (`TRUST=ci`) | the 3 images Lance signed keylessly, pulled from GHCR | a poisoned image pushed straight to GHCR, refused by Koga alone, as the app and as an init container | Hall of Fame |
 | Sabrina · health probes | `champion` | `meowth`, `koffing` | Pallet Town, Champion |
-| Blaine · no host access | `champion`, `meowth` | `koffing` | Pallet Town, Champion |
+| Blaine · no host access | `champion`, `meowth` | `koffing`, `sneaky-debug` (privileged ephemeral container) | Pallet Town, Champion |
+| Prod: no `kubectl debug` | adding a debug container in Pallet Town (positive control) | the same request in Indigo Plateau, refused by `indigo-no-debug` | Champion (`expect_debug_denied.sh`) |
+| Board egress | the board's label reaches `kubernetes.default.svc`; `example.com` is reachable from `default` (control) | the board's label reaching `example.com` | Champion (`expect_egress.sh`) |
+| The board tells the truth | all 6 league workloads at 8/8, prod cards covering 2 pods | Team Rocket shown failing (Arbok on Koga); any report the board couldn't read | Champion (`check_board.py`), Go unit tests |
 | Giovanni · least privilege | `champion`, `board-with-token` (annotated opt-in) | `meowth`, `koffing` | Pallet Town, Champion |
-| All 16 policies loaded | `make policies` waits for 16/16 Ready | a policy set with Koga missing fails to render | Champion (`make demo`) |
+| All 17 policies loaded | `make policies` waits for 17/17 Ready | a policy set with Koga missing fails to render | Champion (`make demo`) |
 | Lorelei · secret scan | full history, no findings | a scan of 0 commits fails the job | Lorelei |
 
 The `Must pass`/`Must fail` resources live in [`deploy/policies/tests/resources.yaml`](../deploy/policies/tests/resources.yaml),

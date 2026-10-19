@@ -119,15 +119,16 @@ make demo
 This takes **3–5 minutes**. It creates a local cluster, installs Kyverno, builds and signs the images, opens the
 gyms, deploys the app and releases Team Rocket.
 
-**Check:** near the end you see `16/16 gyms open`, several `successfully rolled out` lines, and finally
+**Check:** near the end you see `17/17 policies ready: the gyms are open`, several `successfully rolled out` lines, and finally
 `League Board: http://localhost:8088`. If something fails, jump to [Troubleshooting](#troubleshooting).
 
 ### Step 5: Open the League Board
 
 Go to **http://localhost:8088**, or run `make board`.
 
-**Check:** six shiny ✦ cards under *Pallet Town* and *Indigo Plateau*, and three failing *Team Rocket* cards. Click
-the **Gyms** and **Pokédex** tabs.
+**Check:** six cards with **8/8 badges** under *Pallet Town* and *Indigo Plateau* (each prod card stands for its two
+pods), and three failing *Team Rocket* cards. The cards say "no CVE scan" and aren't shiny ✦ yet: shiny needs proof of
+no high or critical CVEs, which comes from Step 6. Click the **Gyms** and **Pokédex** tabs.
 
 ### Step 6 (optional): Turn on vulnerability scanning
 
@@ -135,7 +136,8 @@ the **Gyms** and **Pokédex** tabs.
 make trivy
 ```
 
-**Check:** after ~5 minutes the HP bars fill in. Meowth drops to **0 HP and faints**, thanks to 8 critical CVEs.
+**Check:** after ~5 minutes the HP bars fill in and the six league cards turn **shiny ✦**. Meowth drops to **0 HP and
+faints**, thanks to 8 critical CVEs.
 
 ### Step 7: Play
 
@@ -173,7 +175,7 @@ cluster on your machine.
 | <img src="assets/badges/1.svg" width="28"> <img src="assets/crests/95.svg" width="44"> | **Brock** · Boulder | `brock-hardened-pods` | Pod hardening: non-root, seccomp, no privilege escalation, read-only root FS, drop all capabilities |
 | <img src="assets/badges/2.svg" width="28"> <img src="assets/crests/121.svg" width="44"> | **Misty** · Cascade | `misty-no-plaintext-secrets` | Secrets belong in `Secret` refs, never as literals in Git |
 | <img src="assets/badges/3.svg" width="28"> <img src="assets/crests/26.svg" width="44"> | **Lt. Surge** · Thunder | `surge-resource-limits` | Requests and limits: scheduling, and stopping noisy-neighbour DoS |
-| <img src="assets/badges/4.svg" width="28"> <img src="assets/crests/45.svg" width="44"> | **Erika** · Rainbow | `erika-trusted-images` | Trusted registries, pinned versions, why `:latest` is not a version |
+| <img src="assets/badges/4.svg" width="28"> <img src="assets/crests/45.svg" width="44"> | **Erika** · Rainbow | `erika-trusted-images` | Trusted registries, pinned by digest, why every tag (not just `:latest`) can move |
 | <img src="assets/badges/5.svg" width="28"> <img src="assets/crests/110.svg" width="44"> | **Koga** · Soul | `koga-signed-images` | Supply-chain integrity: only cosign-signed images run |
 | <img src="assets/badges/6.svg" width="28"> <img src="assets/crests/65.svg" width="44"> | **Sabrina** · Marsh | `sabrina-health-probes` | Liveness/readiness probes and self-healing |
 | <img src="assets/badges/7.svg" width="28"> <img src="assets/crests/59.svg" width="44"> | **Blaine** · Volcano | `blaine-no-host-access` | Container escape routes: privileged, host namespaces, hostPath |
@@ -498,8 +500,8 @@ proves who built something, not that it's safe. In real pipelines only CI holds 
 | Brock 🪨 | Pod: `runAsNonRoot: true`, `seccompProfile: {type: RuntimeDefault}`. Container: `allowPrivilegeEscalation: false`, `readOnlyRootFilesystem: true`, `capabilities: {drop: ["ALL"]}` |
 | Misty 💧 | Secret-looking env vars use `valueFrom.secretKeyRef`, never `value:` |
 | Lt. Surge ⚡ | `resources.requests.cpu`, `resources.requests.memory`, `resources.limits.memory` |
-| Erika 🌿 | An image from `kind-registry:5000/poke-league/` with a tag or digest, never `:latest` |
-| Koga 💜 | The image is signed with the league's cosign key |
+| Erika 🌿 | An image from `kind-registry:5000/poke-league/` pinned by digest: `...@sha256:<64 hex>`. A tag alone, any tag, isn't enough |
+| Koga 💜 | Every image, including init and ephemeral containers, is signed with the league's cosign key |
 | Sabrina 👁️ | Both a `livenessProbe` and a `readinessProbe` |
 | Blaine 🔥 | No `privileged`, `hostNetwork`, `hostPID`, `hostIPC` or `hostPath` |
 | Giovanni ⛰️ | Its own ServiceAccount (not `default`), plus `automountServiceAccountToken: false` unless it needs the API |

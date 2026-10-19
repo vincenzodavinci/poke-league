@@ -109,16 +109,17 @@ detection: look at Falco or Tetragon, and add one as a tenth gym.)
 
 ## <img src="../assets/crests/24.svg" width="48"> Arbok: the poisoned image {#arbok}
 
-[`deploy/rocket/arbok.yaml`](../deploy/rocket/arbok.yaml). **7/8 badges.**
+[`deploy/rocket/arbok.yaml`](../deploy/rocket/arbok.yaml), pinned by digest into `.build/rocket/arbok.yaml` by `make rocket`.
+**7/8 badges.**
 
-The manifest is flawless. The image is `kind-registry:5000/poke-league/dex-api:arbok-poisoned`: the right registry, a
-real tag, the right name. `make rocket` built it as dex-api plus one extra layer, which is what an attacker with push
-access to your registry would do, and nobody signed it.
+The manifest is flawless. The image is `kind-registry:5000/poke-league/dex-api:arbok-poisoned`, pinned by its digest:
+the right registry, the right name, an immutable reference, so Erika is satisfied. `make rocket` built it as dex-api
+plus one extra layer, which is what an attacker with push access to your registry would do, and nobody signed it.
 
 ### Attack: walk it into prod
 
 ```bash
-sed 's/namespace: team-rocket/namespace: indigo-plateau/' deploy/rocket/arbok.yaml | k apply -f -
+sed 's/namespace: team-rocket/namespace: indigo-plateau/' .build/rocket/arbok.yaml | k apply -f -
 ```
 
 ```
@@ -145,7 +146,10 @@ docker run --rm --network kind -v $PWD/.cosign:/keys ghcr.io/sigstore/cosign/cos
    which is why `make rocket` now adds a layer.
 2. **Tags are mutable, and verification results get cached.** Kyverno caches signature checks by image reference. Point a
    tag at new content and a cached "valid" can outlive the change. Deploy by digest (`make deploy` does) and both problems
-   disappear.
+   disappear. Erika now insists on it: a tag alone, even a real version tag, fails her gym.
+3. **Arbok has other places to hide.** Move the poisoned image into an init container behind a properly signed app, or
+   attach it later with `kubectl debug`. Koga checks init and ephemeral images, and prod refuses `kubectl debug`
+   altogether (`indigo-no-debug`). `make check` tries both.
 
 ### Fix it
 
@@ -160,7 +164,8 @@ only CI holds the signing identity (see Lance in [elite-four.md](elite-four.md))
 - **Ekans and SSRF.** Write a sprite service that fetches `?url=` from anywhere, the classic SSRF. Deploy it to
   team-rocket and reach something it shouldn't (the API server, another namespace's service). Then explain why
   [`internal/sprites`](../internal/sprites/sprites.go) embeds its images instead, and why the `league-board`
-  NetworkPolicy only allows egress to two pods and the API server.
+  NetworkPolicies only allow egress to two pods and the API server's own two addresses, not "anything on port 443"
+  (`make deploy` pins them; `scripts/expect_egress.sh` proves it with real traffic).
 - **Lateral movement.** From Meowth, try to reach `dex-api` in `pallet-town`
   (`curl dex-api.pallet-town.svc/api/pokemon/1`). Why does it time out? (Read
   [`networkpolicies.yaml`](../deploy/k8s/base/networkpolicies.yaml).)

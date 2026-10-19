@@ -57,8 +57,9 @@ instead of an error. All of it is unit-tested against fake clients ([`board_test
   reproducible and verification exact, and avoids the tag-caching trap described below.
 - **Two independent admission layers.** Pod Security Admission (built in) and Kyverno (custom). Either one alone stops
   Koffing in prod.
-- **NetworkPolicies are default-deny.** Only browser → board, board → backends, board → API server and DNS are allowed.
-  kind's default CNI (kindnet) enforces NetworkPolicies, so this is real, not decoration.
+- **NetworkPolicies are default-deny.** Only browser → board, board → backends, board → API server and DNS are allowed,
+  and "API server" means its two addresses, looked up by `make deploy`, not any host on port 443. kind's default CNI
+  (kindnet) enforces NetworkPolicies, and `make check` proves it with real traffic, so this is real, not decoration.
 - **Every cluster command names its context.** See field note 1.
 
 ## Threat model and what's simplified
@@ -129,6 +130,11 @@ These all happened while the repo was being built. Each one is a lesson in its o
    that failed because the namespace didn't exist. The check now requires an admission denial, from exactly the
    expected gyms, plus a known-good workload that must still be admitted (see
    [Champion](elite-four.md#-champion-end-to-end)). Same lesson as note 2: a security check must fail closed.
+9. **The badges were rounding up.** An outside review found that the board counted a Kyverno "skip" as a pass,
+   showed whichever replica the API listed first, and read a missing CVE count as zero, so a workload could look
+   shiny without evidence. Now a skip is "unknown", a card shows its worst replica, and only a complete Trivy report
+   counts as clean. The same review found Koga checking only regular containers and Erika accepting any tag but
+   `:latest`. A dashboard is a security control too: if it rounds up, people stop checking.
 
 ## Troubleshooting
 
@@ -138,4 +144,4 @@ These all happened while the repo was being built. Each one is a lesson in its o
 | Board at `localhost:8088` doesn't load | `lsof -nP -iTCP:8088`; then `make board-dev` uses a port-forward instead |
 | All badges "unknown" | Kyverno's reports controller runs a background scan every few minutes; check `make reports` |
 | HP shows "awaiting Trivy scan" | `make trivy`; the first vulnerability DB download takes a few minutes |
-| `only N/16 gyms are ready` | `kubectl --context kind-kanto get vpol,ivpol` and `-o yaml` the one that isn't Ready |
+| `only N/17 policies are ready` | `kubectl --context kind-kanto get vpol,ivpol` and `-o yaml` the one that isn't Ready |
