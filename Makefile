@@ -136,9 +136,23 @@ policies: $(POLICY_DEPS) ## Open the 8 gyms (render Koga's root of trust, apply)
 
 deploy: ## Deploy the app to Pallet Town (dev) and Indigo Plateau (prod), pinned by digest
 	$(K) apply -f deploy/k8s/cluster/
+	@# The board may reach the API server and nothing else outside the namespace. Pin its
+	@# egress to the API server's addresses: the kubernetes Service (443), and the endpoint
+	@# behind it (6443), since a NetworkPolicy may see either side of the Service NAT.
+	@svc=$$($(K) -n default get svc kubernetes -o jsonpath='{.spec.clusterIP}'); \
+	  ep=$$($(K) -n default get endpointslices -l kubernetes.io/service-name=kubernetes -o jsonpath='{.items[0].endpoints[0].addresses[0]}'); \
+	  epport=$$($(K) -n default get endpointslices -l kubernetes.io/service-name=kubernetes -o jsonpath='{.items[0].ports[0].port}'); \
+	  test -n "$$svc" -a -n "$$ep" -a -n "$$epport" || { echo "couldn't find the API server's addresses"; exit 1; }; \
+	  mkdir -p $(BUILD)/netpol; \
+	  printf '%s\n' 'apiVersion: networking.k8s.io/v1' 'kind: NetworkPolicy' 'metadata: {name: league-board-apiserver}' \
+	    'spec:' '  podSelector: {matchLabels: {app.kubernetes.io/name: league-board}}' '  policyTypes: [Egress]' '  egress:' \
+	    "    - {to: [{ipBlock: {cidr: $$svc/32}}], ports: [{protocol: TCP, port: 443}]}" \
+	    "    - {to: [{ipBlock: {cidr: $$ep/32}}], ports: [{protocol: TCP, port: $$epport}]}" > $(BUILD)/netpol/apiserver.yaml; \
+	  echo "league-board egress pinned to the API server: $$svc:443, $$ep:$$epport"
 	@for env in pallet-town indigo-plateau; do \
 	  mkdir -p $(BUILD)/overlays/$$env; \
-	  { echo "resources: [../../../deploy/k8s/overlays/$$env]"; echo "images:"; \
+	  cp $(BUILD)/netpol/apiserver.yaml $(BUILD)/overlays/$$env/apiserver.yaml; \
+	  { echo "namespace: $$env"; echo "resources: [../../../deploy/k8s/overlays/$$env, apiserver.yaml]"; echo "images:"; \
 	    for app in $(APPS); do \
 	      echo "  - {name: $(REG_IN)/$$app, newName: $(IMAGES_FROM)/$$app, digest: $$(cat $(BUILD)/digests/$$app)}"; \
 	    done; } > $(BUILD)/overlays/$$env/kustomization.yaml; \
@@ -200,6 +214,7 @@ check: ## Prove the league works: 8/8 everywhere, Team Rocket refused by exactly
 	  sed 's/namespace: team-rocket/namespace: indigo-plateau/' | \
 	  CTX=$(CTX) scripts/expect_denied.sh "arbok (init container)" "$(ARBOK_GYMS)"
 	CTX=$(CTX) scripts/expect_debug_denied.sh
+	CTX=$(CTX) scripts/expect_egress.sh
 	CTX=$(CTX) scripts/expect_admitted.sh dex-api
 
 challenge: ## Try to sneak Team Rocket into prod (spoiler: the gyms say no)
