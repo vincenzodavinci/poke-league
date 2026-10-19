@@ -24,7 +24,7 @@ var Gyms = []Gym{
 	{"surge", "Lt. Surge", "Thunder", 3, "electric", 26, "surge-resource-limits",
 		"Power budget: every container declares CPU/memory requests and a memory limit, so one pod can't starve the node."},
 	{"erika", "Erika", "Rainbow", 4, "grass", 45, "erika-trusted-images",
-		"Know your roots: images come from the league registry, pinned to a version, never :latest."},
+		"Know your roots: images come from the league registry, pinned by digest. A tag, any tag, can be re-pointed."},
 	{"koga", "Koga", "Soul", 5, "poison", 110, "koga-signed-images",
 		"Antidote for poisoned images: only images signed with the league's cosign key may run."},
 	{"sabrina", "Sabrina", "Marsh", 6, "psychic", 65, "sabrina-health-probes",

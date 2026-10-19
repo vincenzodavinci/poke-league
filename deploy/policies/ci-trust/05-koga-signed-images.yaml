@@ -28,7 +28,7 @@ spec:
     - glob: "*"
   validationConfigurations:
     mutateDigest: false
-    verifyDigest: false
+    verifyDigest: true       # the image is referenced by digest, so what's verified is what runs
     required: true
   attestors:
     - name: lance
@@ -41,7 +41,14 @@ spec:
               subject: __CI_IDENTITY__
         # ctlog left at its defaults: the signature must be in the public Rekor
         # transparency log, so every signing event is publicly auditable.
+  variables:
+    # Init and ephemeral containers run code too. Checking only images.containers
+    # would let an unsigned image in through an init container.
+    - name: allImages
+      expression: >-
+        images.containers + images.?initContainers.orValue([]) +
+        images.?ephemeralContainers.orValue([])
   validations:
     - expression: >-
-        images.containers.map(image, verifyImageSignatures(image, [attestors.lance])).all(n, n > 0)
+        variables.allImages.map(image, verifyImageSignatures(image, [attestors.lance])).all(n, n > 0)
       message: "Koga: every image must be signed by the league's CI workflow on main."

@@ -1,6 +1,7 @@
 # Gym 4 · Erika · Rainbow Badge (Grass)
-# Know your roots: images come only from the league registry and are pinned to
-# a version or digest. :latest (or no tag at all) is a moving target.
+# Know your roots: images come only from the league registry and are pinned by
+# digest. Every tag is a moving target, not just :latest: anyone who can push
+# to the registry can re-point v1.2.0 or dev. A digest names the bytes.
 apiVersion: policies.kyverno.io/v1
 kind: ValidatingPolicy
 metadata:
@@ -23,17 +24,21 @@ spec:
     namespaceSelector:
       matchLabels: {poke-league.dev/league: "true"}
   variables:
+    # Every kind of container a pod can run, including `kubectl debug`'s ephemeral ones.
     - name: containers
-      expression: object.spec.containers + object.spec.?initContainers.orValue([])
+      expression: >-
+        object.spec.containers + object.spec.?initContainers.orValue([]) +
+        object.spec.?ephemeralContainers.orValue([])
+    - name: registry
+      expression: "'kind-registry:5000/poke-league/'"
     - name: untrusted
       expression: >-
         variables.containers.filter(c, !(
-          c.image.startsWith('kind-registry:5000/poke-league/') &&
-          (c.image.contains('@sha256:') || c.image.substring(c.image.lastIndexOf('/')).contains(':')) &&
-          !c.image.endsWith(':latest')
+          c.image.startsWith(variables.registry) &&
+          c.image.substring(size(variables.registry)).matches('^[a-z0-9][a-z0-9._/-]*(:[A-Za-z0-9._-]+)?@sha256:[a-f0-9]{64}$')
         )).map(c, c.image)
   validations:
     - expression: size(variables.untrusted) == 0
       messageExpression: >-
-        'Erika: ' + variables.untrusted.join(', ') + ' must come from kind-registry:5000/poke-league/
-        pinned to a version or digest (never :latest).'
+        'Erika: ' + variables.untrusted.join(', ') + ' must come from ' + variables.registry +
+        ' pinned by digest (@sha256:...). Tags can be re-pointed; digests can\'t.'

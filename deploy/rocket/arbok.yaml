@@ -2,7 +2,8 @@
 # A flawless manifest: hardened, limited, probed, own ServiceAccount. But its
 # image was pushed to the league registry by someone without the signing key
 # (`make rocket` rebuilds dex-api with an extra layer as :arbok-poisoned and never signs it).
-# Seven gyms wave it through. Only Koga notices.
+# `make rocket` also pins it by digest, like every league image, into
+# .build/rocket/arbok.yaml. Seven gyms wave it through. Only Koga notices.
 # Lab: docs/team-rocket.md#arbok
 apiVersion: v1
 kind: ServiceAccount

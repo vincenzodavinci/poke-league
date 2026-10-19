@@ -46,6 +46,9 @@ else
 $(error TRUST must be key or ci, not "$(TRUST)")
 endif
 
+# What a registry may answer with for an image: index or single manifest, OCI or Docker.
+MANIFEST_TYPES := application/vnd.oci.image.index.v1+json, application/vnd.docker.distribution.manifest.list.v2+json, application/vnd.oci.image.manifest.v1+json, application/vnd.docker.distribution.manifest.v2+json
+
 KYVERNO_CHART := 3.9.1
 TRIVY_CHART   := 0.37.0
 COSIGN_IMAGE  := ghcr.io/sigstore/cosign/cosign:v2.6.1
@@ -125,11 +128,11 @@ sign: .cosign/cosign.key ## Sign every image with the league key (Lance's job in
 policies: $(POLICY_DEPS) ## Open the 8 gyms (render Koga's root of trust, apply)
 	python3 -I scripts/render_policies.py $(RENDER_ARGS)
 	$(K) apply -k $(BUILD)/policies
-	@echo "Waiting for all 16 gyms (8 audit + 8 enforce) to open..."
+	@echo "Waiting for all 17 policies (8 gyms in audit + 8 enforced, and prod's no-debug guard)..."
 	@for i in $$(seq 1 60); do \
 	  ready=$$($(K) get vpol,ivpol -o jsonpath='{range .items[*]}{.status.conditionStatus.ready}{"\n"}{end}' | grep -c true || true); \
-	  [ "$$ready" = 16 ] && { echo "16/16 gyms open"; exit 0; }; sleep 2; \
-	done; echo "only $$ready/16 gyms are ready:"; $(K) get vpol,ivpol; exit 1
+	  [ "$$ready" = 17 ] && { echo "17/17 policies ready: the gyms are open"; exit 0; }; sleep 2; \
+	done; echo "only $$ready/17 policies are ready:"; $(K) get vpol,ivpol; exit 1
 
 deploy: ## Deploy the app to Pallet Town (dev) and Indigo Plateau (prod), pinned by digest
 	$(K) apply -f deploy/k8s/cluster/
@@ -151,7 +154,15 @@ rocket: ## Release Team Rocket into their hideout (the CTF lab)
 	printf 'FROM %s\nLABEL dev.poke-league.tampered-by="team-rocket"\n' "$(ARBOK_FROM)/dex-api@$$(cat $(BUILD)/digests/dex-api)" | \
 	  docker build -q -t $(REG)/dex-api:arbok-poisoned - >/dev/null
 	docker push -q $(REG)/dex-api:arbok-poisoned >/dev/null
-	$(K) apply -k deploy/rocket
+	@# Arbok is pinned by digest like every league image (Erika requires it), so
+	@# Koga is the only gym it fails. The registry's answer is the digest that counts.
+	@mkdir -p $(BUILD)/rocket $(BUILD)/digests
+	curl -fsSI -H 'Accept: $(MANIFEST_TYPES)' http://localhost:5001/v2/poke-league/dex-api/manifests/arbok-poisoned | \
+	  awk 'tolower($$1) == "docker-content-digest:" {print $$2}' | tr -d '\r' > $(BUILD)/digests/arbok
+	@grep -Eqx 'sha256:[a-f0-9]{64}' $(BUILD)/digests/arbok || { echo "no digest for dex-api:arbok-poisoned"; exit 1; }
+	cp deploy/rocket/*.yaml $(BUILD)/rocket/
+	sed "s|dex-api:arbok-poisoned|dex-api@$$(cat $(BUILD)/digests/arbok)|" deploy/rocket/arbok.yaml > $(BUILD)/rocket/arbok.yaml
+	$(K) apply -k $(BUILD)/rocket
 	@echo "Team Rocket is blasting off... check the board."
 
 trivy: ## Optional: Trivy Operator scans every workload; CVEs become HP damage
@@ -174,16 +185,21 @@ reports: ## Show every gym result straight from Kyverno's PolicyReports
 	$(K) get policyreports -A -o custom-columns='NS:.metadata.namespace,KIND:.scope.kind,NAME:.scope.name,PASS:.summary.pass,FAIL:.summary.fail'
 
 check: ## Prove the league works: 8/8 everywhere, Team Rocket refused by exactly the right gyms
-	python3 -I scripts/check_board.py $(if $(filter ci,$(TRUST)),--image-prefix $(GHCR)/)
+	python3 -I scripts/check_board.py --arbok-fails $(ARBOK_GYMS) $(if $(filter ci,$(TRUST)),--image-prefix $(GHCR)/)
 	@for app in meowth koffing arbok; do \
 	  case $$app in \
 	    meowth)  gyms="brock erika giovanni misty sabrina surge" ;; \
 	    koffing) gyms="blaine brock erika giovanni sabrina surge" ;; \
 	    arbok)   gyms="$(ARBOK_GYMS)" ;; \
 	  esac; \
-	  sed 's/namespace: team-rocket/namespace: indigo-plateau/' deploy/rocket/$$app.yaml | \
+	  sed 's/namespace: team-rocket/namespace: indigo-plateau/' $(BUILD)/rocket/$$app.yaml | \
 	    CTX=$(CTX) scripts/expect_denied.sh $$app "$$gyms"; \
 	done
+	@# The poisoned image hidden in an init container, behind a properly signed app image.
+	python3 -I scripts/sneak_init.py $(BUILD)/rocket/arbok.yaml "$(IMAGES_FROM)/dex-api@$$(cat $(BUILD)/digests/dex-api)" | \
+	  sed 's/namespace: team-rocket/namespace: indigo-plateau/' | \
+	  CTX=$(CTX) scripts/expect_denied.sh "arbok (init container)" "$(ARBOK_GYMS)"
+	CTX=$(CTX) scripts/expect_debug_denied.sh
 	CTX=$(CTX) scripts/expect_admitted.sh dex-api
 
 challenge: ## Try to sneak Team Rocket into prod (spoiler: the gyms say no)
