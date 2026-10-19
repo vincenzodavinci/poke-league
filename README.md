@@ -473,17 +473,18 @@ To bring the lab back: `k apply -f deploy/rocket/koffing.yaml`.
 Its image was rebuilt by someone without the signing key, so it has no valid signature. See for yourself:
 ```bash
 docker run --rm --network kind -v $PWD/.cosign:/keys ghcr.io/sigstore/cosign/cosign:v2.6.1 verify --key /keys/cosign.pub \
-  --allow-insecure-registry --allow-http-registry --insecure-ignore-tlog kind-registry:5000/poke-league/dex-api:dev            # ✅ verified
+  --allow-insecure-registry --allow-http-registry --insecure-ignore-tlog kind-registry:5000/poke-league/dex-api@$(cat .build/digests/dex-api) # ✅ verified
 docker run --rm --network kind -v $PWD/.cosign:/keys ghcr.io/sigstore/cosign/cosign:v2.6.1 verify --key /keys/cosign.pub \
-  --allow-insecure-registry --allow-http-registry --insecure-ignore-tlog kind-registry:5000/poke-league/dex-api:arbok-poisoned # ❌ no signatures found
+  --allow-insecure-registry --allow-http-registry --insecure-ignore-tlog kind-registry:5000/poke-league/dex-api@$(cat .build/digests/arbok)   # ❌ no signatures found
 ```
 </details>
 
 <details>
 <summary><b>Arbok 2</b>: fix it (and why you might not want to)</summary>
 
-Get the registry digest the same way as in *Meowth 3b* (with `manifests/arbok-poisoned`), sign it with the same
-`cosign sign` command, then restart Arbok so the gyms judge it again:
+Arbok's registry digest is already in `.build/digests/arbok` (`make rocket` asked the registry, the same way as in
+*Meowth 3b*). Sign `kind-registry:5000/poke-league/dex-api@$(cat .build/digests/arbok)` with the same `cosign sign`
+command, then restart Arbok so the gyms judge it again:
 ```bash
 k -n team-rocket rollout restart deploy/arbok
 ```
