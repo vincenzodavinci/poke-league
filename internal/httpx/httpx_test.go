@@ -1,6 +1,8 @@
 package httpx
 
 import (
+	"context"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -24,5 +26,26 @@ func TestSecureHeaders(t *testing.T) {
 		if got := rec.Header().Get(k); got != v {
 			t.Errorf("%s: want %q, got %q", k, v, got)
 		}
+	}
+}
+
+func TestReadyRunsItsChecks(t *testing.T) {
+	probe := func(checks ...func(context.Context) error) (int, int) {
+		mux := http.NewServeMux()
+		Health(mux, checks...)
+		codes := [2]int{}
+		for i, path := range []string{"/healthz", "/readyz"} {
+			rec := httptest.NewRecorder()
+			mux.ServeHTTP(rec, httptest.NewRequest("GET", path, nil))
+			codes[i] = rec.Code
+		}
+		return codes[0], codes[1]
+	}
+	if live, ready := probe(); live != 200 || ready != 200 {
+		t.Fatalf("no checks: want 200/200, got %d/%d", live, ready)
+	}
+	down := func(context.Context) error { return errors.New("api server unreachable") }
+	if live, ready := probe(down); live != 200 || ready != 503 {
+		t.Fatalf("failing check: want live 200 and ready 503, got %d/%d", live, ready)
 	}
 }

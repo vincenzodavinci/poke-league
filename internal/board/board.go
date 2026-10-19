@@ -1,6 +1,11 @@
 // Package board builds the League Board: every workload in the league
 // namespaces rendered as a Pokémon, with badges from Kyverno PolicyReports
 // and HP from Trivy Operator VulnerabilityReports.
+//
+// The board is evidence, so it never rounds up: a badge is earned only when a
+// gym evaluated the pod and passed it, a card shows its worst replica, and a
+// clean CVE count needs a complete Trivy report. Anything the board couldn't
+// read is shown as unknown and listed in League.Problems, never as a pass.
 package board
 
 import (
@@ -10,6 +15,7 @@ import (
 	"strconv"
 
 	corev1 "k8s.io/api/core/v1"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -25,12 +31,32 @@ var (
 // PokemonAnnotation picks the Pokémon a workload appears as.
 const PokemonAnnotation = "poke-league.dev/pokemon"
 
+// Badge statuses, best to worst. A gym with several rules, or a workload with
+// several replicas, gets the worst status any of them reports.
+const (
+	Earned  = "earned"  // the gym evaluated the pod and passed it
+	Unknown = "unknown" // no report yet, or the gym skipped the pod: not proven either way
+	Failed  = "failed"
+)
+
+var badgeRank = map[string]int{Earned: 0, Unknown: 1, Failed: 2}
+
 // Badge is one gym result for a workload.
 type Badge struct {
 	Gym     string `json:"gym"`
-	Status  string `json:"status"` // earned | failed | unknown
+	Status  string `json:"status"` // earned | unknown | failed
 	Message string `json:"message,omitempty"`
 }
+
+// Scan states for a workload's CVE data. Only Scanned means a clean count is real.
+const (
+	Scanned      = "scanned"       // a complete Trivy report
+	NotInstalled = "not-installed" // Trivy Operator isn't in the cluster (`make trivy`)
+	NotScanned   = "not-scanned"   // Trivy is installed but hasn't reported on this workload yet
+	ScanError    = "error"         // the reports couldn't be read, or one was incomplete
+)
+
+var scanRank = map[string]int{Scanned: 0, NotInstalled: 1, NotScanned: 2, ScanError: 3}
 
 // Vulns counts CVEs by severity across the workload's containers.
 type Vulns struct {
@@ -50,15 +76,18 @@ type Workload struct {
 	Image     string  `json:"image"`
 	Badges    []Badge `json:"badges"`
 	Earned    int     `json:"earned"`
-	Vulns     *Vulns  `json:"vulns"` // nil when Trivy hasn't scanned it (or isn't installed)
+	Vulns     *Vulns  `json:"vulns"` // nil unless Scan is "scanned"
+	Scan      string  `json:"scan"`
 	HP        *int    `json:"hp"`
 	Shiny     bool    `json:"shiny"`
+	Replicas  int     `json:"replicas"` // pods behind this card; it shows the worst of them
 }
 
 // League is the whole board.
 type League struct {
 	Gyms      []Gym      `json:"gyms"`
 	Workloads []Workload `json:"workloads"`
+	Problems  []string   `json:"problems"` // reports the board couldn't read: its view is incomplete
 }
 
 // Board reads cluster state. Both clients are interfaces so tests can use fakes.
@@ -70,32 +99,76 @@ type Board struct {
 
 // Collect builds the current League.
 func (b *Board) Collect(ctx context.Context) (League, error) {
-	league := League{Gyms: Gyms, Workloads: []Workload{}}
+	league := League{Gyms: Gyms, Workloads: []Workload{}, Problems: []string{}}
 	for _, ns := range b.Namespaces {
 		pods, err := b.Kube.CoreV1().Pods(ns).List(ctx, metav1.ListOptions{})
 		if err != nil {
 			return league, fmt.Errorf("list pods in %s: %w", ns, err)
 		}
-		badges := b.badgesByPod(ctx, ns)
-		vulns := b.vulnsByOwner(ctx, ns)
-		seen := map[string]bool{}
+		badges, err := b.badgesByPod(ctx, ns)
+		if err != nil {
+			league.Problems = append(league.Problems, err.Error())
+		}
+		scans, err := b.vulnsByOwner(ctx, ns)
+		if err != nil {
+			league.Problems = append(league.Problems, err.Error())
+		}
+		// One card per app, showing its worst replica: a healthy pod must
+		// never hide a failing one (a rollout, or audit mode in dev).
+		var order []string
+		cards := map[string]Workload{}
 		for _, pod := range pods.Items {
 			if pod.DeletionTimestamp != nil {
 				continue
 			}
-			w := toWorkload(pod, badges[pod.Name], vulns[owner(pod)])
-			// One card per app, not per replica.
-			if seen[w.Name] {
+			w := toWorkload(pod, badges[pod.Name], scans.forOwner(owner(pod)))
+			prev, seen := cards[w.Name]
+			if !seen {
+				order = append(order, w.Name)
+				cards[w.Name] = w
 				continue
 			}
-			seen[w.Name] = true
-			league.Workloads = append(league.Workloads, w)
+			cards[w.Name] = worse(prev, w)
+		}
+		for _, name := range order {
+			league.Workloads = append(league.Workloads, cards[name])
 		}
 	}
 	return league, nil
 }
 
-func toWorkload(pod corev1.Pod, results map[string]Badge, v *Vulns) Workload {
+// worse merges two replicas of one app into a card showing the worse of each.
+func worse(a, b Workload) Workload {
+	out := a
+	if b.Earned < a.Earned || (b.Earned == a.Earned && b.Phase != string(corev1.PodRunning)) {
+		out = b // the card names the worst pod, so you know which one to look at
+	}
+	out.Replicas = a.Replicas + b.Replicas
+	out.Badges = make([]Badge, len(a.Badges))
+	out.Earned = 0
+	for i := range a.Badges {
+		out.Badges[i] = a.Badges[i]
+		if badgeRank[b.Badges[i].Status] > badgeRank[a.Badges[i].Status] {
+			out.Badges[i] = b.Badges[i]
+		}
+		if out.Badges[i].Status == Earned {
+			out.Earned++
+		}
+	}
+	out.Scan, out.Vulns = a.Scan, a.Vulns
+	if scanRank[b.Scan] > scanRank[a.Scan] {
+		out.Scan, out.Vulns = b.Scan, b.Vulns
+	} else if a.Scan == Scanned && b.Scan == Scanned {
+		out.Vulns = &Vulns{
+			Critical: max(a.Vulns.Critical, b.Vulns.Critical), High: max(a.Vulns.High, b.Vulns.High),
+			Medium: max(a.Vulns.Medium, b.Vulns.Medium), Low: max(a.Vulns.Low, b.Vulns.Low),
+		}
+	}
+	setHealth(&out)
+	return out
+}
+
+func toWorkload(pod corev1.Pod, results map[string]Badge, scan scanResult) Workload {
 	name := pod.Labels["app.kubernetes.io/name"]
 	if name == "" {
 		name = pod.Name
@@ -106,7 +179,9 @@ func toWorkload(pod corev1.Pod, results map[string]Badge, v *Vulns) Workload {
 		Pod:       pod.Name,
 		Phase:     string(pod.Status.Phase),
 		Pokemon:   pokemonFor(pod, name),
-		Vulns:     v,
+		Vulns:     scan.vulns,
+		Scan:      scan.state,
+		Replicas:  1,
 	}
 	if len(pod.Spec.Containers) > 0 {
 		w.Image = pod.Spec.Containers[0].Image
@@ -114,19 +189,28 @@ func toWorkload(pod corev1.Pod, results map[string]Badge, v *Vulns) Workload {
 	for _, g := range Gyms {
 		badge, ok := results[g.Key]
 		if !ok {
-			badge = Badge{Gym: g.Key, Status: "unknown"}
+			badge = Badge{Gym: g.Key, Status: Unknown}
 		}
-		if badge.Status == "earned" {
+		if badge.Status == Earned {
 			w.Earned++
 		}
 		w.Badges = append(w.Badges, badge)
 	}
-	if v != nil {
-		hp := HP(*v)
-		w.HP = &hp
-		w.Shiny = w.Earned == len(Gyms) && v.Critical == 0 && v.High == 0
-	}
+	setHealth(&w)
 	return w
+}
+
+// setHealth derives HP and shininess. Shiny needs every badge AND a real,
+// complete scan with no high or critical CVEs: missing data is never clean.
+func setHealth(w *Workload) {
+	w.HP, w.Shiny = nil, false
+	if w.Scan != Scanned || w.Vulns == nil {
+		w.Vulns = nil
+		return
+	}
+	hp := HP(*w.Vulns)
+	w.HP = &hp
+	w.Shiny = w.Earned == len(Gyms) && w.Vulns.Critical == 0 && w.Vulns.High == 0
 }
 
 // HP turns a vulnerability count into hit points out of 100.
@@ -155,12 +239,16 @@ func owner(pod corev1.Pod) string {
 }
 
 // badgesByPod reads Kyverno's per-resource PolicyReports: pod -> gym -> badge.
-// A missing CRD or RBAC error just leaves every badge "unknown".
-func (b *Board) badgesByPod(ctx context.Context, ns string) map[string]map[string]Badge {
+// If Kyverno's CRD isn't there yet every badge stays unknown; any other error
+// is returned, so the board says its view is incomplete instead of looking empty.
+func (b *Board) badgesByPod(ctx context.Context, ns string) (map[string]map[string]Badge, error) {
 	out := map[string]map[string]Badge{}
 	list, err := b.Dyn.Resource(policyReportGVR).Namespace(ns).List(ctx, metav1.ListOptions{})
+	if apierrors.IsNotFound(err) {
+		return out, nil
+	}
 	if err != nil {
-		return out
+		return out, fmt.Errorf("policy reports in %s: %w", ns, err)
 	}
 	for _, rep := range list.Items {
 		kind, _, _ := unstructured.NestedString(rep.Object, "scope", "kind")
@@ -179,48 +267,86 @@ func (b *Board) badgesByPod(ctx context.Context, ns string) map[string]map[strin
 			if gym == "" {
 				continue
 			}
-			status := "failed"
-			if res, _ := m["result"].(string); res == "pass" || res == "skip" {
-				status = "earned"
-			}
 			msg, _ := m["message"].(string)
+			var status string
+			switch res, _ := m["result"].(string); res {
+			case "pass":
+				status = Earned
+			case "skip":
+				// Skipped means the gym didn't evaluate this pod: no evidence either way.
+				status, msg = Unknown, "skipped: "+msg
+			default: // fail, warn, error
+				status = Failed
+			}
 			if out[pod] == nil {
 				out[pod] = map[string]Badge{}
 			}
-			// A gym can have several rules: any failure loses the badge.
-			if prev, ok := out[pod][gym]; ok && prev.Status == "failed" {
+			// A gym can have several rules: the badge takes the worst result.
+			if prev, ok := out[pod][gym]; ok && badgeRank[prev.Status] >= badgeRank[status] {
 				continue
 			}
 			out[pod][gym] = Badge{Gym: gym, Status: status, Message: msg}
 		}
 	}
-	return out
+	return out, nil
+}
+
+type scanResult struct {
+	state string
+	vulns *Vulns
+}
+
+// scans is what Trivy reported for one namespace.
+type scans struct {
+	state  string            // NotInstalled or ScanError for the whole namespace, else Scanned
+	owners map[string]*Vulns // owner -> summed counts
+	broken map[string]bool   // owners with at least one incomplete report
+}
+
+func (s scans) forOwner(key string) scanResult {
+	switch {
+	case s.state != Scanned:
+		return scanResult{state: s.state}
+	case s.broken[key]:
+		return scanResult{state: ScanError}
+	case s.owners[key] == nil:
+		return scanResult{state: NotScanned}
+	}
+	return scanResult{state: Scanned, vulns: s.owners[key]}
 }
 
 // vulnsByOwner sums Trivy VulnerabilityReports per owning controller.
-func (b *Board) vulnsByOwner(ctx context.Context, ns string) map[string]*Vulns {
-	out := map[string]*Vulns{}
+func (b *Board) vulnsByOwner(ctx context.Context, ns string) (scans, error) {
+	out := scans{state: Scanned, owners: map[string]*Vulns{}, broken: map[string]bool{}}
 	list, err := b.Dyn.Resource(vulnReportGVR).Namespace(ns).List(ctx, metav1.ListOptions{})
+	if apierrors.IsNotFound(err) {
+		out.state = NotInstalled // optional: `make trivy`
+		return out, nil
+	}
 	if err != nil {
-		return out
+		out.state = ScanError
+		return out, fmt.Errorf("vulnerability reports in %s: %w", ns, err)
 	}
 	for _, rep := range list.Items {
 		labels := rep.GetLabels()
 		key := labels["trivy-operator.resource.kind"] + "/" + labels["trivy-operator.resource.name"]
-		v := out[key]
+		counts := map[string]int{}
+		for _, field := range []string{"criticalCount", "highCount", "mediumCount", "lowCount"} {
+			n, found, err := unstructured.NestedInt64(rep.Object, "report", "summary", field)
+			if !found || err != nil {
+				out.broken[key] = true // a missing count is not a zero
+			}
+			counts[field] = int(n)
+		}
+		v := out.owners[key]
 		if v == nil {
 			v = &Vulns{}
-			out[key] = v
+			out.owners[key] = v
 		}
-		v.Critical += count(rep, "criticalCount")
-		v.High += count(rep, "highCount")
-		v.Medium += count(rep, "mediumCount")
-		v.Low += count(rep, "lowCount")
+		v.Critical += counts["criticalCount"]
+		v.High += counts["highCount"]
+		v.Medium += counts["mediumCount"]
+		v.Low += counts["lowCount"]
 	}
-	return out
-}
-
-func count(u unstructured.Unstructured, field string) int {
-	n, _, _ := unstructured.NestedInt64(u.Object, "report", "summary", field)
-	return int(n)
+	return out, nil
 }

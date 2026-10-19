@@ -38,7 +38,10 @@ func main() {
 	}
 
 	mux := http.NewServeMux()
-	httpx.Health(mux)
+	// Ready only while the API server answers: without it the board can't read the league.
+	httpx.Health(mux, func(ctx context.Context) error {
+		return b.Kube.Discovery().RESTClient().Get().AbsPath("/version").Do(ctx).Error()
+	})
 	mux.Handle("GET /api/league", cached(b, 5*time.Second))
 	mux.Handle("GET /api/pokemon", proxy(httpx.Env("DEX_API_URL", "http://dex-api")))
 	mux.Handle("GET /api/pokemon/", proxy(httpx.Env("DEX_API_URL", "http://dex-api")))
