@@ -135,6 +135,12 @@ These all happened while the repo was being built. Each one is a lesson in its o
    shiny without evidence. Now a skip is "unknown", a card shows its worst replica, and only a complete Trivy report
    counts as clean. The same review found Koga checking only regular containers and Erika accepting any tag but
    `:latest`. A dashboard is a security control too: if it rounds up, people stop checking.
+10. **NetworkPolicies start a few seconds late.** The first egress test ran `curl` in a pod the instant it started,
+   and reached the internet from a namespace that denies everything. kindnet's policy engine learns a new pod's IP
+   a few seconds after it starts, and lets its traffic through until then: it fails open. Steady-state enforcement
+   is real (a long-lived pod is blocked), so the test now waits for the block and requires it to hold. The lesson
+   cuts both ways: test the steady state, and remember a fresh pod has a short unpoliced window, one more reason
+   the gyms stop bad pods before they start.
 
 ## Troubleshooting
 
