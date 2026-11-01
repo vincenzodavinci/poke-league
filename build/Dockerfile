@@ -7,7 +7,7 @@
 # The build stage runs on the builder's own platform and Go cross-compiles for the
 # target, so CI's arm64 images build at native speed instead of under emulation.
 ARG BUILDPLATFORM
-FROM --platform=$BUILDPLATFORM golang:1.27-alpine@sha256:f92b6ef800e499660581efdabdf25d9d817a9d124eaf900924f0504e7e27e12d AS build
+FROM --platform=$BUILDPLATFORM golang:1.27-alpine@sha256:d200d2dd76b03a99b52651fd1325aff7dcd35422c35c01bac56571b0507f3deb AS build
 WORKDIR /src
 COPY go.mod go.sum ./
 RUN go mod download
